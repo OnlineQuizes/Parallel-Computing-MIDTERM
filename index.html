@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parallel Computing Quiz</title>
+        <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css" />
     <style>
     :root {
         --bg-color: #f8fafc;
@@ -130,100 +133,6 @@
         transform: translateY(-50%);
         opacity: 0.15;
         font-size: 3rem;
-    }
-
-    /* Enhanced Mobile PDF Viewing */
-    @media (max-width: 768px) {
-        .pdf-viewer-container {
-            height: 85vh !important; /* Increased height for mobile */
-            min-height: 500px;
-            position: relative;
-        }
-        
-        .pdf-frame-container {
-            position: absolute;
-            top: 60px; /* Height of header */
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        }
-        
-        .pdf-frame {
-            width: 100%;
-            height: 100%;
-            min-height: 0;
-            border: none;
-        }
-        
-        /* Force PDF to be zoomable and scrollable */
-        .pdf-frame {
-            -webkit-overflow-scrolling: touch;
-            overflow: auto;
-        }
-        
-        /* Optimize for mobile browsers */
-        .pdf-viewer-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 0.8rem 1rem;
-        }
-        
-        .pdf-viewer-title {
-            font-size: 1rem;
-            max-width: 60%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .pdf-viewer-container {
-            height: 90vh !important; /* Even taller on small phones */
-            min-height: 400px;
-            border-radius: 10px;
-        }
-        
-        .pdf-viewer-header {
-            padding: 0.6rem 0.8rem;
-        }
-        
-        .pdf-nav-btn {
-            padding: 0.4rem 0.8rem;
-            min-width: 40px;
-            font-size: 0.9rem;
-        }
-        
-        .pdf-controls {
-            gap: 0.5rem;
-        }
-        
-        .pdf-btn {
-            padding: 0.7rem 1rem;
-            font-size: 0.9rem;
-        }
-    }
-
-    /* iOS-specific fixes */
-    @supports (-webkit-touch-callout: none) {
-        .pdf-frame-container {
-            height: -webkit-fill-available;
-        }
-        
-        .pdf-viewer-container {
-            height: -webkit-fill-available !important;
-        }
-    }
-
-    /* Android-specific fixes */
-    @media screen and (-webkit-min-device-pixel-ratio:0) and (max-width: 768px) {
-        .pdf-frame {
-            transform: scale(1);
-            transform-origin: top left;
-        }
     }
 
     .controls {
@@ -528,6 +437,245 @@
         box-shadow: 0 4px 12px rgba(42, 103, 111, 0.3);
     }
 
+    /* PDF Viewer Container - Enhanced */
+    .pdf-viewer-container {
+        background: var(--slide-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        min-height: 500px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pdf-viewer-header {
+        background: var(--quiz-header-bg);
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .pdf-viewer-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        flex-grow: 1;
+    }
+
+    .pdf-controls-small {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #page-info {
+        color: white;
+        font-weight: 500;
+        padding: 0 0.5rem;
+        white-space: nowrap;
+    }
+
+    .pdf-nav-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        min-width: 40px;
+        height: 35px;
+    }
+
+    .pdf-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    /* PDF.js Viewer Wrapper */
+    .pdf-viewer-wrapper {
+        flex-grow: 1;
+        position: relative;
+        overflow: auto;
+        min-height: 400px;
+        background: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    [data-theme="dark"] .pdf-viewer-wrapper {
+        background: #2d3748;
+    }
+
+    /* Canvas Container */
+    #pdf-canvas-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    /* PDF Canvas */
+    #pdf-canvas {
+        max-width: 100%;
+        height: auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-radius: 5px;
+        background: white;
+        margin: 0 auto;
+        display: block;
+    }
+
+    [data-theme="dark"] #pdf-canvas {
+        background: #4a5568;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Loading Indicator */
+    .pdf-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--slide-bg);
+        z-index: 10;
+    }
+
+    .pdf-loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid var(--border-color);
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+
+    .pdf-loading-text {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Fallback iframe */
+    .pdf-frame {
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
+        border: none;
+        background: white;
+    }
+
+    [data-theme="dark"] .pdf-frame {
+        background: #2d3748;
+    }
+
+    /* Responsive Design for PDF Viewer */
+    @media (max-width: 1024px) {
+        .pdf-viewer-container {
+            max-height: 75vh;
+        }
+        
+        .pdf-viewer-header {
+            padding: 0.8rem 1rem;
+        }
+        
+        .pdf-nav-btn {
+            padding: 0.3rem 0.6rem;
+            min-width: 35px;
+            height: 32px;
+            font-size: 0.9rem;
+        }
+        
+        #page-info {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .pdf-viewer-container {
+            max-height: 70vh;
+            min-height: 400px;
+        }
+        
+        .pdf-viewer-header {
+            flex-direction: column;
+            gap: 0.8rem;
+            text-align: center;
+            padding: 0.8rem;
+        }
+        
+        .pdf-controls-small {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .pdf-nav-btn {
+            padding: 0.3rem 0.5rem;
+            min-width: 32px;
+            height: 30px;
+            font-size: 0.85rem;
+        }
+        
+        #page-info {
+            order: -1;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pdf-viewer-title {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pdf-viewer-container {
+            max-height: 65vh;
+            min-height: 350px;
+        }
+        
+        .pdf-viewer-wrapper {
+            padding: 10px;
+        }
+        
+        .pdf-nav-btn {
+            padding: 0.2rem 0.4rem;
+            min-width: 30px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+        
+        #page-info {
+            font-size: 0.85rem;
+        }
+    }
+
     /* PDF Viewer - Expanded Version */
     .pdf-viewer-container {
         background: var(--slide-bg);
@@ -737,6 +885,7 @@
         }
     }
     </style>
+
 </head>
 <body>
     <div class="quiz-container">
@@ -1875,46 +2024,61 @@ void core2() { shared.y = 20; }</pre>
             </div>
         </div>
 
-        <!-- PDF Slides Section -->
-        <div class="slides-section hidden" id="slides-section">
-            <div class="slides-header">
-                سلايدات المادة - Lecture Slides
-            </div>
-            
-            <div class="pdf-controls">
-                <button class="pdf-btn active" onclick="loadPdf('lecture1.pdf', 'Lecture 1')">
-                    <span>📄</span> Lecture 1
-                </button>
-                <button class="pdf-btn" onclick="loadPdf('lecture2.pdf', 'Lecture 2')">
-                    <span>📄</span> Lecture 2
-                </button>
-                <button class="pdf-btn" onclick="loadPdf('lecture3_4.pdf', 'Lectures 3 & 4')">
-                    <span>📄</span> Lectures 3 & 4
-                </button>
-            </div>
+            <!-- PDF Slides Section -->
+            <div class="slides-section hidden" id="slides-section">
+                <div class="slides-header">
+                    سلايدات المادة - Lecture Slides
+                </div>
+                
+                <div class="pdf-controls">
+                    <button class="pdf-btn active" onclick="loadPdf('lecture1.pdf', 'Lecture 1')">
+                        <span>📄</span> Lecture 1
+                    </button>
+                    <button class="pdf-btn" onclick="loadPdf('lecture2.pdf', 'Lecture 2')">
+                        <span>📄</span> Lecture 2
+                    </button>
+                    <button class="pdf-btn" onclick="loadPdf('lecture3_4.pdf', 'Lectures 3 & 4')">
+                        <span>📄</span> Lectures 3 & 4
+                    </button>
+                </div>
 
-            <div class="pdf-viewer-container">
-                <div class="pdf-viewer-header">
-                    <div class="pdf-viewer-title" id="pdf-title">Lecture 1</div>
-                    <div class="pdf-controls-small">
-                        <button class="pdf-nav-btn" onclick="downloadPdf()" title="Download">⤓</button>
+                <!-- PDF Viewer Container -->
+                <div class="pdf-viewer-container">
+                    <div class="pdf-viewer-header">
+                        <div class="pdf-viewer-title" id="pdf-title">Lecture 1</div>
+                        <div class="pdf-controls-small">
+                            <button class="pdf-nav-btn" onclick="prevPage()" title="Previous">❮</button>
+                            <span id="page-info">Page <span id="page-num">1</span> of <span id="page-count">1</span></span>
+                            <button class="pdf-nav-btn" onclick="nextPage()" title="Next">❯</button>
+                            <button class="pdf-nav-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+                            <button class="pdf-nav-btn" onclick="zoomIn()" title="Zoom In">+</button>
+                            <button class="pdf-nav-btn" onclick="downloadPdf()" title="Download">⤓</button>
+                        </div>
+                    </div>
+                    
+                    <!-- PDF.js Viewer Container -->
+                    <div class="pdf-viewer-wrapper" id="pdf-viewer-wrapper">
+                        <div id="pdf-loading" class="pdf-loading">
+                            <div class="pdf-loading-spinner"></div>
+                            <div class="pdf-loading-text">Loading PDF...</div>
+                        </div>
+                        
+                        <!-- PDF.js Canvas Container -->
+                        <div id="pdf-canvas-container" style="display: none;">
+                            <canvas id="pdf-canvas"></canvas>
+                        </div>
+                        
+                        <!-- Fallback iframe (for desktop/browser that support PDFs) -->
+                        <iframe class="pdf-frame" id="pdf-frame" src="lecture1.pdf" frameborder="0" style="display: none;"></iframe>
                     </div>
                 </div>
-                <div class="pdf-frame-container">
-                    <div class="pdf-loading" id="pdf-loading">
-                        <div class="pdf-loading-spinner"></div>
-                        <div class="pdf-loading-text">Loading PDF...</div>
-                    </div>
-                    <iframe class="pdf-frame" id="pdf-frame" src="lecture1.pdf" frameborder="0"></iframe>
+                
+                <div class="controls">
+                    <button class="btn" onclick="toggleSlides()">
+                        <span class="btn-icon">←</span> العودة للأسئلة
+                    </button>
                 </div>
             </div>
-            
-            <div class="controls">
-                <button class="btn" onclick="toggleSlides()">
-                    <span class="btn-icon">←</span> العودة للأسئلة
-                </button>
-            </div>
-        </div>
 
         <div class="footer-note">
             دعواتكم للمساعد الخفي والعاملين على الموقع بالتوفيق والسداد والزوجة الصالحة
@@ -2001,10 +2165,19 @@ void core2() { shared.y = 20; }</pre>
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
-
-        // PDF functionality
+        // PDF.js functionality
         let currentPdf = 'lecture1.pdf';
-        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        let pdfDoc = null;
+        let currentPage = 1;
+        let scale = 1.0;
+        const scaleStep = 0.2;
+        const maxScale = 3.0;
+        const minScale = 0.5;
+
+        // Detect mobile devices
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        }
 
         function loadPdf(pdfFile, title) {
             currentPdf = pdfFile;
@@ -2018,46 +2191,130 @@ void core2() { shared.y = 20; }</pre>
             // Update title
             document.getElementById('pdf-title').textContent = title;
             
+            // Reset to first page
+            currentPage = 1;
+            scale = 1.0;
+            
             // Show loading
-            const loading = document.getElementById('pdf-loading');
-            const frame = document.getElementById('pdf-frame');
+            showLoading();
             
-            loading.style.display = 'flex';
-            frame.style.display = 'none';
+            // Hide both canvas and iframe initially
+            document.getElementById('pdf-canvas-container').style.display = 'none';
+            document.getElementById('pdf-frame').style.display = 'none';
             
-            // Use Google Docs Viewer for mobile devices for better compatibility
-            let pdfUrl = pdfFile;
-            
-            // For mobile devices, use Google Docs Viewer
-            if (isMobile) {
-                // Encode the PDF URL for Google Docs Viewer
-                const encodedUrl = encodeURIComponent(window.location.origin + '/' + pdfFile);
-                pdfUrl = `https://docs.google.com/gview?embedded=true&url=${encodedUrl}`;
+            // Check if mobile and use PDF.js
+            if (isMobileDevice()) {
+                loadPdfWithJs(pdfFile);
+            } else {
+                loadPdfWithIframe(pdfFile);
             }
+        }
+
+        function loadPdfWithJs(pdfFile) {
+            // Initialize PDF.js
+            const loadingTask = pdfjsLib.getDocument(pdfFile);
             
-            // Set iframe source
-            frame.src = pdfUrl;
+            loadingTask.promise.then(function(pdf) {
+                pdfDoc = pdf;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                renderPage(currentPage);
+                hideLoading();
+                document.getElementById('pdf-canvas-container').style.display = 'flex';
+            }).catch(function(error) {
+                console.error('PDF.js Error:', error);
+                // Fallback to iframe if PDF.js fails
+                loadPdfWithIframe(pdfFile);
+            });
+        }
+
+        function loadPdfWithIframe(pdfFile) {
+            const iframe = document.getElementById('pdf-frame');
+            iframe.src = pdfFile;
             
-            // Wait for PDF to load
-            frame.onload = function() {
-                setTimeout(() => {
-                    loading.style.display = 'none';
-                    frame.style.display = 'block';
-                }, 800);
+            iframe.onload = function() {
+                hideLoading();
+                iframe.style.display = 'block';
+                // Update page count for iframe (we don't know, so set to 1)
+                document.getElementById('page-count').textContent = '1';
+                document.getElementById('page-num').textContent = '1';
             };
             
-            // Fallback in case of error
-            frame.onerror = function() {
-                loading.innerHTML = `
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
-                        <div style="color: var(--text-color); font-weight: 500; margin-bottom: 1rem;">Unable to load PDF</div>
-                        <button class="btn" onclick="downloadPdf()" style="margin-top: 1rem;">
-                            <span>⤓</span> Download PDF
-                        </button>
-                    </div>
-                `;
+            iframe.onerror = function() {
+                // If iframe fails, try PDF.js
+                loadPdfWithJs(pdfFile);
             };
+        }
+
+        function renderPage(pageNum) {
+            if (!pdfDoc) return;
+            
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const canvas = document.getElementById('pdf-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calculate viewport
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                // Render PDF page
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                const renderTask = page.render(renderContext);
+                
+                renderTask.promise.then(function() {
+                    document.getElementById('page-num').textContent = pageNum;
+                });
+            });
+        }
+
+        function showLoading() {
+            const loading = document.getElementById('pdf-loading');
+            loading.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('pdf-loading');
+            loading.style.display = 'none';
+        }
+
+        function nextPage() {
+            if (pdfDoc && currentPage < pdfDoc.numPages) {
+                currentPage++;
+                renderPage(currentPage);
+            } else if (pdfDoc) {
+                // Wrap around to first page
+                currentPage = 1;
+                renderPage(currentPage);
+            }
+        }
+
+        function prevPage() {
+            if (pdfDoc && currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            } else if (pdfDoc) {
+                // Wrap around to last page
+                currentPage = pdfDoc.numPages;
+                renderPage(currentPage);
+            }
+        }
+
+        function zoomIn() {
+            if (pdfDoc && scale < maxScale) {
+                scale += scaleStep;
+                renderPage(currentPage);
+            }
+        }
+
+        function zoomOut() {
+            if (pdfDoc && scale > minScale) {
+                scale -= scaleStep;
+                renderPage(currentPage);
+            }
         }
 
         function downloadPdf() {
@@ -2069,6 +2326,16 @@ void core2() { shared.y = 20; }</pre>
             document.body.removeChild(link);
         }
 
+        // Initialize PDF viewer on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Load first PDF
+            if (isMobileDevice()) {
+                loadPdfWithJs('lecture1.pdf');
+            } else {
+                loadPdfWithIframe('lecture1.pdf');
+            }
+        });
+        
         // Event listeners for radio buttons
         const radioButtons = document.querySelectorAll('input[type="radio"]');
         radioButtons.forEach(radio => {
