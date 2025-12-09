@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Computing Quiz</title>
+    <style>
+    :root {
+        --bg-color: #f8fafc;
+        --text-color: #161b24;
+        --primary-color: #2a676f;
+        --secondary-color: #3a8893;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --border-color: rgba(224, 224, 224, 0.7);
+        --option-bg: #f8fafc;
+        --option-hover-bg: #e2e8f0;
+        --quiz-header-bg: linear-gradient(135deg, #2a676f 0%, #3a8893 100%);
+        --correct-bg: #e8f5e9;
+        --correct-border: #43a047;
+        --incorrect-bg: #ffebee;
+        --incorrect-border: #e53935;
+        --gradient-color: rgba(42, 103, 111, 0.03);
+        --background-pattern: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232a676f' fill-opacity='0.05'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/svg%3E");
+        --slide-bg: #ffffff;
+        --slide-header: #2a676f;
+        --slide-border: #d1d5db;
+        --grammar-bg: #f1f5f9;
+        --grammar-border: #cbd5e1;
+        --glass-bg: rgba(42, 103, 111, 0.1);
+        --glass-border: rgba(42, 103, 111, 0.2);
+        --glass-shadow: 0 4px 20px rgba(42, 103, 111, 0.15);
+        --button-primary-bg: linear-gradient(135deg, #2a676f, #3a8893);
+        --button-secondary-bg: linear-gradient(135deg, #a98a50, #c5a66a);
+    }
+
+    [data-theme="dark"] {
+        --bg-color: #1a202c;
+        --text-color: #e2e8f0;
+        --primary-color: #38b2ac;
+        --secondary-color: #2a676f;
+        --card-bg: rgba(26, 32, 44, 0.95);
+        --border-color: rgba(74, 85, 104, 0.7);
+        --option-bg: rgba(45, 55, 72, 0.5);
+        --option-hover-bg: rgba(66, 153, 225, 0.1);
+        --quiz-header-bg: linear-gradient(135deg, #2a676f 0%, #3a8893 100%);
+        --correct-bg: rgba(72, 187, 120, 0.1);
+        --correct-border: #48bb78;
+        --incorrect-bg: rgba(245, 101, 101, 0.1);
+        --incorrect-border: #f56565;
+        --gradient-color: transparent;
+        --background-pattern: none;
+        --slide-bg: #2d3748;
+        --slide-header: #38b2ac;
+        --slide-border: #4a5568;
+        --grammar-bg: #4a5568;
+        --grammar-border: #718096;
+        --glass-bg: rgba(56, 178, 172, 0.1);
+        --glass-border: rgba(56, 178, 172, 0.2);
+        --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        --button-primary-bg: linear-gradient(135deg, #38b2ac, #2a676f);
+        --button-secondary-bg: linear-gradient(135deg, #f6ad55, #ed8936);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        background-image: 
+            linear-gradient(to right, var(--gradient-color) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--gradient-color) 1px, transparent 1px),
+            var(--background-pattern);
+        background-size: 
+            40px 40px,
+            40px 40px,
+            52px 26px;
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .quiz-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: var(--card-bg);
+        border-radius: 20px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quiz-container::before {
+        content: '💻🧠📚';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        font-size: 120px;
+        opacity: 0.05;
+        transform: rotate(15deg);
+        z-index: 0;
+    }
+
+    .quiz-header {
+        text-align: center;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: white;
+        padding: 1.5rem;
+        background: var(--quiz-header-bg);
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(42, 103, 111, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quiz-header::after {
+        content: '💻';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.15;
+        font-size: 3rem;
+    }
+
+    .controls {
+        text-align: center;
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 1.5rem;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.9rem 1.8rem;
+        background: var(--button-primary-bg);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(42, 103, 111, 0.2);
+        position: relative;
+        overflow: hidden;
+        min-width: 160px;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(42, 103, 111, 0.3);
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-secondary {
+        background: var(--button-secondary-bg);
+    }
+
+    .btn-icon {
+        font-size: 1.1rem;
+    }
+
+    .question {
+        margin-bottom: 2.5rem;
+        padding: 1.8rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: visible;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .question::before {
+
+        position: absolute;
+        left: -25px;
+        top: 150px;
+        transform: scale(1);
+        font-size: 1.8rem;
+        z-index: 1;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: var(--card-bg);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--primary-color);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .question.answered-correct::before {
+	
+        border-color: #43a047;
+        background-color: #e8f5e9;
+        transform: scale(1.2) rotate(360deg);
+    }
+
+    .question.answered-incorrect::before {
+
+        border-color: #e53935;
+        background-color: #ffebee;
+        transform: scale(1.1);
+        animation: shake 0.5s ease-in-out;
+    }
+
+    .question:hover::before {
+        transform: scale(1.1) rotate(10deg);
+        left: -28px;
+        color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    @keyframes shake {
+        0%, 100% { margin-left: 0; }
+        25% { margin-left: -5px; }
+        75% { margin-left: 5px; }
+    }
+
+    .question:hover {
+        transform: translateX(5px);
+        border-color: var(--primary-color);
+        box-shadow: 6px 6px 20px rgba(42, 103, 111, 0.1);
+    }
+
+
+     /* Styling for the code block within a question */
+.code-block {
+    margin: 15px 0 20px;
+    background-color: var(--grammar-bg);
+    border: 1px solid var(--grammar-border);
+    border-radius: 8px;
+    padding: 15px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.95em;
+    overflow-x: auto; /* Allows horizontal scrolling for long lines */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+    .options label {
+        display: flex;
+        align-items: center;
+        padding: 1.1rem;
+        margin: 0.8rem 0;
+        background: var(--option-bg);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        gap: 12px;
+        border: 2px solid transparent;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .options label:hover {
+        background: var(--option-hover-bg);
+        transform: translateX(5px);
+        box-shadow: 4px 4px 12px rgba(42, 103, 111, 0.1);
+        border-color: var(--primary-color);
+    }
+
+    .options input[type="radio"] {
+        margin-left: 1rem;
+        transform: scale(1.3);
+        accent-color: var(--primary-color);
+        cursor: pointer;
+    }
+
+    .answer-box {
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        padding: 1.2rem;
+        border-radius: 12px;
+        display: none;
+        animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        position: relative;
+        z-index: 2;
+        border-left: 5px solid;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+	
+
+    .correct {
+        background: var(--correct-bg);
+        border-color: var(--correct-border);
+        color: var(--text-color);
+    }
+
+    .correct::before {
+	
+        margin-right: 10px;
+    }
+
+    .incorrect {
+        background: var(--incorrect-bg);
+        border-color: var(--incorrect-border);
+        color: var(--text-color);
+    }
+
+    .incorrect::before {
+
+        margin-right: 10px;
+    }
+
+    /* PDF Slides Section */
+    .slides-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 3px dashed var(--primary-color);
+    }
+
+    .code-example {
+        background: var(--grammar-bg);
+        border: 2px solid var(--grammar-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.2rem 0;
+        font-family: 'Courier New', monospace;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+
+    .code-example pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: var(--text-color);
+    }
+
+    .slides-header {
+        background: var(--quiz-header-bg);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin: 2.5rem 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        text-align: center;
+        box-shadow: 0 6px 20px rgba(42, 103, 111, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .slides-header::after {
+        content: '📚';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.15;
+        font-size: 2.5rem;
+    }
+
+    /* PDF Controls */
+    .pdf-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .pdf-btn {
+        padding: 0.9rem 1.8rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        color: var(--text-color);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+    }
+
+    .pdf-btn:hover {
+        background: var(--button-primary-bg);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .pdf-btn.active {
+        background: var(--button-primary-bg);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(42, 103, 111, 0.3);
+    }
+
+    /* PDF Viewer - Expanded Version */
+    .pdf-viewer-container {
+        background: var(--slide-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        min-height: 950px; /* Increased height for better viewing */
+        height: 75vh; /* Make it take 75% of viewport height */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pdf-viewer-header {
+        background: var(--quiz-header-bg);
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+    }
+
+    .pdf-viewer-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .pdf-controls-small {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .pdf-nav-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        min-width: 50px;
+    }
+
+    .pdf-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .pdf-frame-container {
+        flex-grow: 1;
+        position: relative;
+        overflow: hidden;
+        min-height: 600px; /* Ensure minimum height */
+    }
+
+    .pdf-frame {
+        width: 100%;
+        height: 100%;
+        border: none;
+        min-height: 600px;
+    }
+
+    .pdf-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--slide-bg);
+        z-index: 10;
+    }
+
+    .pdf-loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid var(--border-color);
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+
+    .pdf-loading-text {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .footer-note {
+        text-align: center;
+        margin: 3rem 0 1rem;
+        padding: 1.5rem;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        border-top: 2px solid rgba(42, 103, 111, 0.2);
+        opacity: 0.9;
+        font-weight: 600;
+        background: var(--glass-bg);
+        border-radius: 15px;
+        backdrop-filter: blur(5px);
+    }
+
+    [data-theme="dark"] .footer-note {
+        color: var(--secondary-color);
+        border-color: rgba(169, 138, 80, 0.3);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hidden Class */
+    .hidden {
+        display: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .quiz-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .quiz-header, .slides-header {
+            font-size: 1.7rem;
+            padding: 1.2rem;
+        }
+        
+        .pdf-viewer-container {
+            min-height: 600px;
+            height: 70vh;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .question::before {
+            display: none;
+        }
+        
+        .controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .btn {
+            width: 100%;
+            margin: 0.3rem 0;
+        }
+        
+        .pdf-controls {
+            flex-direction: column;
+        }
+        
+        .pdf-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .pdf-viewer-container {
+            min-height: 500px;
+            height: 65vh;
+        }
+        
+        .pdf-viewer-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .pdf-controls-small {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quiz-header, .slides-header {
+            font-size: 1.4rem;
+            padding: 1rem;
+        }
+        
+        .pdf-viewer-container {
+            min-height: 400px;
+            height: 60vh;
+        }
+        
+        .pdf-nav-btn {
+            padding: 0.4rem 0.8rem;
+            min-width: 45px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            Parallel Computing Quiz
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="resetQuiz()">
+                <span class="btn-icon">🔄</span> Reset Quiz
+            </button>
+            <button class="btn" onclick="showAllAnswers()">
+                <span class="btn-icon">👁️</span> Show Answers
+            </button>
+            <button class="btn" onclick="hideAllAnswers()">
+                <span class="btn-icon">🙈</span> Hide Answers
+            </button>
+            <button class="btn btn-secondary" id="themeToggle" onclick="toggleTheme()">
+                <span class="btn-icon">🌙</span> Dark Mode
+            </button>
+            <button class="btn btn-secondary" id="slidesToggle" onclick="toggleSlides()">
+                <span class="btn-icon">📚</span> سلايدات المادة
+            </button>
+        </div>
+
+        <!-- Questions Section -->
+        <div id="questions-section">
+            <!-- Parallel Computing Questions 1-102 -->
+            <!-- Questions 1-15 from previous version -->
+            <div class="question">
+                <h3>1. A serial program executes:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="a"> a) Many instructions at once</label>
+                    <label><input type="radio" name="q1" value="b"> b) One instruction at a time</label>
+                    <label><input type="radio" name="q1" value="c"> c) Instructions on many processors</label>
+                    <label><input type="radio" name="q1" value="d"> d) Random instructions</label>
+                </div>
+                <div class="answer-box" id="answer1" data-correct-answer="b">Correct Answer: b) One instruction at a time</div>
+            </div>
+
+            <div class="question">
+                <h3>2. A parallel program executes:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="a"> a) Instructions one by one</label>
+                    <label><input type="radio" name="q2" value="b"> b) Multiple instructions at the same time</label>
+                    <label><input type="radio" name="q2" value="c"> c) Only one instruction per second</label>
+                    <label><input type="radio" name="q2" value="d"> d) Without using processors</label>
+                </div>
+                <div class="answer-box" id="answer2" data-correct-answer="b">Correct Answer: b) Multiple instructions at the same time</div>
+            </div>
+
+            <div class="question">
+                <h3>3. All processors are made of:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="a"> a) Wires</label>
+                    <label><input type="radio" name="q3" value="b"> b) Transistors</label>
+                    <label><input type="radio" name="q3" value="c"> c) Batteries</label>
+                    <label><input type="radio" name="q3" value="d"> d) Screens</label>
+                </div>
+                <div class="answer-box" id="answer3" data-correct-answer="b">Correct Answer: b) Transistors</div>
+            </div>
+
+            <div class="question">
+                <h3>4. Smaller transistors mean:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="a"> a) Fewer transistors on a chip</label>
+                    <label><input type="radio" name="q4" value="b"> b) More transistors and higher speed</label>
+                    <label><input type="radio" name="q4" value="c"> c) Slower performance</label>
+                    <label><input type="radio" name="q4" value="d"> d) No effect on performance</label>
+                </div>
+                <div class="answer-box" id="answer4" data-correct-answer="b">Correct Answer: b) More transistors and higher speed</div>
+            </div>
+
+            <div class="question">
+                <h3>5. Why did processors begin using more cores in modern CPUs?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="a"> a) Because single-core CPUs became faster than needed</label>
+                    <label><input type="radio" name="q5" value="b"> b) To reduce manufacturing cost only</label>
+                    <label><input type="radio" name="q5" value="c"> c) Because multi-core chips are slower</label>
+                    <label><input type="radio" name="q5" value="d"> d) Because sequential performance stopped improving</label>
+                </div>
+                <div class="answer-box" id="answer5" data-correct-answer="d">Correct Answer: d) Because sequential performance stopped improving</div>
+            </div>
+
+            <div class="question">
+                <h3>6. Faster processors use more power, create more heat, and can become unreliable.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="a"> a) True</label>
+                    <label><input type="radio" name="q6" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer6" data-correct-answer="a">Correct Answer: a) True</div>
+            </div>
+
+            <div class="question">
+                <h3>7. Why did processors require heatsinks in modern computers?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q7" value="a"> a) Because they generated a large amount of heat</label>
+                    <label><input type="radio" name="q7" value="b"> b) Because heatsinks make processors run slower</label>
+                    <label><input type="radio" name="q7" value="c"> c) Because processors cannot operate without a fan</label>
+                    <label><input type="radio" name="q7" value="d"> d) Because heatsinks increase storage capacity</label>
+                </div>
+                <div class="answer-box" id="answer7" data-correct-answer="a">Correct Answer: a) Because they generated a large amount of heat</div>
+            </div>
+
+            <div class="question">
+                <h3>8. Why do we need ever-increasing computer performance?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q8" value="a"> a) To solve complex problems in science, medicine, and data analysis</label>
+                    <label><input type="radio" name="q8" value="b"> b) To handle more demanding software and applications</label>
+                    <label><input type="radio" name="q8" value="c"> c) To improve user experience and speed for everyday tasks</label>
+                    <label><input type="radio" name="q8" value="d"> d) All of the above</label>
+                </div>
+                <div class="answer-box" id="answer8" data-correct-answer="a">Correct Answer: a) To solve complex problems in science, medicine, and data analysis</div>
+            </div>
+
+            <div class="question">
+                <h3>9. Parallel programming makes programs faster by using many cores together.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q9" value="a"> a) True</label>
+                    <label><input type="radio" name="q9" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer9" data-correct-answer="a">Correct Answer: a) True</div>
+            </div>
+
+            <div class="question">
+                <h3>10. Data parallelism means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q10" value="a"> a) One core does all work</label>
+                    <label><input type="radio" name="q10" value="b"> b) Different work on the same data</label>
+                    <label><input type="radio" name="q10" value="c"> c) Same work on different parts of data</label>
+                    <label><input type="radio" name="q10" value="d"> d) Different tasks at the same time</label>
+                </div>
+                <div class="answer-box" id="answer10" data-correct-answer="c">Correct Answer: c) Same work on different parts of data</div>
+            </div>
+
+            <div class="question">
+                <h3>11. Task parallelism means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q11" value="a"> a) Same work on different parts of data</label>
+                    <label><input type="radio" name="q11" value="b"> b) Different tasks at the same time</label>
+                    <label><input type="radio" name="q11" value="c"> c) One task only</label>
+                    <label><input type="radio" name="q11" value="d"> d) No tasks are divided</label>
+                </div>
+                <div class="answer-box" id="answer11" data-correct-answer="b">Correct Answer: b) Different tasks at the same time</div>
+            </div>
+
+            <div class="question">
+                <h3>12. Which is example of data parallelism?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q12" value="a"> a) Divide the questions among workers</label>
+                    <label><input type="radio" name="q12" value="b"> b) One worker does all exams</label>
+                    <label><input type="radio" name="q12" value="c"> c) Divide the exams among workers</label>
+                    <label><input type="radio" name="q12" value="d"> d) All workers do the same exam</label>
+                </div>
+                <div class="answer-box" id="answer12" data-correct-answer="c">Correct Answer: c) Divide the exams among workers</div>
+            </div>
+
+            <div class="question">
+                <h3>13. Which is example of task parallelism?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q13" value="a"> a) Divide the questions among workers</label>
+                    <label><input type="radio" name="q13" value="b"> b) One worker does all exams</label>
+                    <label><input type="radio" name="q13" value="c"> c) Divide the exams among workers</label>
+                    <label><input type="radio" name="q13" value="d"> d) All workers do the same exam</label>
+                </div>
+                <div class="answer-box" id="answer13" data-correct-answer="a">Correct Answer: a) Divide the questions among workers</div>
+            </div>
+
+            <div class="question">
+                <h3>14. Why do parallel programs need coordination between cores?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q14" value="a"> a) To communicate partial results</label>
+                    <label><input type="radio" name="q14" value="b"> b) To balance the load among cores</label>
+                    <label><input type="radio" name="q14" value="c"> c) To synchronize the work</label>
+                    <label><input type="radio" name="q14" value="d"> d) All of the above</label>
+                </div>
+                <div class="answer-box" id="answer14" data-correct-answer="d">Correct Answer: d) All of the above</div>
+            </div>
+
+            <div class="question">
+                <h3>15. Explicit parallelism means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q15" value="a"> a) Programmer writes parallel code manually</label>
+                    <label><input type="radio" name="q15" value="b"> b) The system automatically handles all parallel work</label>
+                    <label><input type="radio" name="q15" value="c"> c) It is very easy to write</label>
+                    <label><input type="radio" name="q15" value="d"> d) It gives low performance</label>
+                </div>
+                <div class="answer-box" id="answer15" data-correct-answer="a">Correct Answer: a) Programmer writes parallel code manually</div>
+            </div>
+
+            <div class="question">
+                <h3>16. Implicit parallelism means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q16" value="a"> a) It is used only in low-level languages</label>
+                    <label><input type="radio" name="q16" value="b"> b) It gives the highest performance always</label>
+                    <label><input type="radio" name="q16" value="c"> c) Programmer controls every core</label>
+                    <label><input type="radio" name="q16" value="d"> d) It is automatic and easier to write</label>
+                </div>
+                <div class="answer-box" id="answer16" data-correct-answer="d">Correct Answer: d) It is automatic and easier to write</div>
+            </div>
+
+            <div class="question">
+                <h3>17. In parallel processing, communication means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q17" value="a"> a) Sharing the work evenly among the cores</label>
+                    <label><input type="radio" name="q17" value="b"> b) Sending partial results between cores</label>
+                    <label><input type="radio" name="q17" value="c"> c) Making one core faster than the others</label>
+                    <label><input type="radio" name="q17" value="d"> d) Stopping some cores from working</label>
+                </div>
+                <div class="answer-box" id="answer17" data-correct-answer="b">Correct Answer: b) Sending partial results between cores</div>
+            </div>
+
+            <div class="question">
+                <h3>18. In parallel processing, load balancing means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q18" value="a"> a) Making sure cores stay in step and don't get too far ahead</label>
+                    <label><input type="radio" name="q18" value="b"> b) Giving all the work to one core</label>
+                    <label><input type="radio" name="q18" value="c"> c) Sharing the work evenly among the cores</label>
+                    <label><input type="radio" name="q18" value="d"> d) Stopping some cores from working</label>
+                </div>
+                <div class="answer-box" id="answer18" data-correct-answer="c">Correct Answer: c) Sharing the work evenly among the cores</div>
+            </div>
+
+            <div class="question">
+                <h3>19. In parallel processing, synchronization means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q19" value="a"> a) Making sure cores stay in step and don't get too far ahead</label>
+                    <label><input type="radio" name="q19" value="b"> b) Sharing the work evenly among the cores</label>
+                    <label><input type="radio" name="q19" value="c"> c) Stopping all cores from working</label>
+                    <label><input type="radio" name="q19" value="d"> d) Sending partial results between cores</label>
+                </div>
+                <div class="answer-box" id="answer19" data-correct-answer="a">Correct Answer: a) Making sure cores stay in step and don't get too far ahead</div>
+            </div>
+
+            <div class="question">
+                <h3>20. In a shared-memory system:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q20" value="a"> a) All cores share the same memory</label>
+                    <label><input type="radio" name="q20" value="b"> b) Each core has its own private memory</label>
+                    <label><input type="radio" name="q20" value="c"> c) Cores never communicate</label>
+                    <label><input type="radio" name="q20" value="d"> d) Memory is not used</label>
+                </div>
+                <div class="answer-box" id="answer20" data-correct-answer="a">Correct Answer: a) All cores share the same memory</div>
+            </div>
+
+            <div class="question">
+                <h3>21. In a distributed-memory system:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q21" value="a"> a) All cores share the same memory</label>
+                    <label><input type="radio" name="q21" value="b"> b) Each core has its own private memory</label>
+                    <label><input type="radio" name="q21" value="c"> c) No communication is needed</label>
+                    <label><input type="radio" name="q21" value="d"> d) Memory is empty</label>
+                </div>
+                <div class="answer-box" id="answer21" data-correct-answer="b">Correct Answer: b) Each core has its own private memory</div>
+            </div>
+
+            <div class="question">
+                <h3>22. Concurrent computing allows multiple tasks to be in progress at the same time.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q22" value="a"> a) True</label>
+                    <label><input type="radio" name="q22" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer22" data-correct-answer="a">Correct Answer: a) True</div>
+            </div>
+
+            <div class="question">
+                <h3>23. Parallel computing runs one task at a time to solve simple problem.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q23" value="a"> a) True</label>
+                    <label><input type="radio" name="q23" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer23">Correct Answer: b) False<br><br>Explanation: Parallel computing runs multiple tasks at the same moment to solve one problem together.</div>
+            </div>
+
+            <div class="question">
+                <h3>24. In distributed computing, a program may need to cooperate with other programs to solve a problem.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q24" value="a"> a) True</label>
+                    <label><input type="radio" name="q24" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer24" data-correct-answer="a">Correct Answer: a) True</div>
+            </div>
+
+            <div class="question">
+                <h3>25. The Von Neumann architecture consists mainly of:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q25" value="a"> a) CPU, Memory, and Input/Output devices</label>
+                    <label><input type="radio" name="q25" value="b"> b) CPU, Registers, and Hard Disk</label>
+                    <label><input type="radio" name="q25" value="c"> c) CPU, Memory, and Interconnect (Bus)</label>
+                    <label><input type="radio" name="q25" value="d"> d) Control Unit, ALU, and Cache</label>
+                </div>
+                <div class="answer-box" id="answer25" data-correct-answer="c">Correct Answer: c) CPU, Memory, and Interconnect (Bus)</div>
+            </div>
+
+            <div class="question">
+                <h3>26. The Von Neumann bottleneck refers to:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q26" value="a"> a) The CPU is slower than the memory</label>
+                    <label><input type="radio" name="q26" value="b"> b) The connection limits between CPU and memory</label>
+                    <label><input type="radio" name="q26" value="c"> c) The CPU and memory share the same register</label>
+                    <label><input type="radio" name="q26" value="d"> d) Instructions are executed in parallel</label>
+                </div>
+                <div class="answer-box" id="answer26" data-correct-answer="b">Correct Answer: b) The connection limits between CPU and memory</div>
+            </div>
+
+            <div class="question">
+                <h3>27. The CPU (Central Processing Unit) is divided into:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q27" value="a"> a) ALU and Memory</label>
+                    <label><input type="radio" name="q27" value="b"> b) Bus and Control Unit</label>
+                    <label><input type="radio" name="q27" value="c"> c) Control Unit and Datapath</label>
+                    <label><input type="radio" name="q27" value="d"> d) Register and Cache</label>
+                </div>
+                <div class="answer-box" id="answer27" data-correct-answer="c">Correct Answer: c) Control Unit and Datapath</div>
+            </div>
+
+            <div class="question">
+                <h3>28. The Control Unit in the CPU is responsible for:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q28" value="a"> a) Controls the sequence of instruction execution</label>
+                    <label><input type="radio" name="q28" value="b"> b) Performs arithmetic and logical operations</label>
+                    <label><input type="radio" name="q28" value="c"> c) Holds instruction addresses temporarily</label>
+                    <label><input type="radio" name="q28" value="d"> d) Transfers data between registers and memory</label>
+                </div>
+                <div class="answer-box" id="answer28" data-correct-answer="a">Correct Answer: a) Controls the sequence of instruction execution</div>
+            </div>
+
+            <div class="question">
+                <h3>29. The Datapath in the CPU:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q29" value="a"> a) Controls the sequence of instruction execution</label>
+                    <label><input type="radio" name="q29" value="b"> b) Performs arithmetic and logical operations</label>
+                    <label><input type="radio" name="q29" value="c"> c) Holds instruction addresses temporarily</label>
+                    <label><input type="radio" name="q29" value="d"> d) Transfers data between registers and memory</label>
+                </div>
+                <div class="answer-box" id="answer29" data-correct-answer="b">Correct Answer: b) Performs arithmetic and logical operations</div>
+            </div>
+
+            <div class="question">
+                <h3>30. The Bus in the Von Neumann architecture:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q30" value="a"> a) Transfers data and instructions between CPU and memory</label>
+                    <label><input type="radio" name="q30" value="b"> b) Temporarily stores current program instructions</label>
+                    <label><input type="radio" name="q30" value="c"> c) Performs arithmetic and logic operations</label>
+                    <label><input type="radio" name="q30" value="d"> d) Manages synchronization and control signals within the CPU</label>
+                </div>
+                <div class="answer-box" id="answer30" data-correct-answer="a">Correct Answer: a) Transfers data and instructions between CPU and memory</div>
+            </div>
+
+            <div class="question">
+                <h3>31. Registers are large and slow memory units used for long-term data storage.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q31" value="a"> a) True</label>
+                    <label><input type="radio" name="q31" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer31">Correct Answer: b) False<br><br>Explanation: Registers are very fast, small storage units inside the CPU used for temporary data.</div>
+            </div>
+
+            <div class="question">
+                <h3>32. What does the Program Counter (PC) do?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q32" value="a"> a) Keeps data for temporary use</label>
+                    <label><input type="radio" name="q32" value="b"> b) Stores the result of an operation</label>
+                    <label><input type="radio" name="q32" value="c"> c) Holds the address of the next instruction</label>
+                    <label><input type="radio" name="q32" value="d"> d) Controls the order of execution</label>
+                </div>
+                <div class="answer-box" id="answer32" data-correct-answer="c">Correct Answer: c) Holds the address of the next instruction</div>
+            </div>
+
+            <div class="question">
+                <h3>33. When data are transferred from memory to CPU, the process is called:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q33" value="a"> a) Fetch or Read</label>
+                    <label><input type="radio" name="q33" value="b"> b) Write or Store</label>
+                    <label><input type="radio" name="q33" value="c"> c) Encode</label>
+                    <label><input type="radio" name="q33" value="d"> d) Execute</label>
+                </div>
+                <div class="answer-box" id="answer33" data-correct-answer="a">Correct Answer: a) Fetch or Read</div>
+            </div>
+
+            <div class="question">
+                <h3>34. When data are transferred from CPU to memory, it is called:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q34" value="a"> a) Fetch or Read</label>
+                    <label><input type="radio" name="q34" value="b"> b) Write or Store</label>
+                    <label><input type="radio" name="q34" value="c"> c) Decode</label>
+                    <label><input type="radio" name="q34" value="d"> d) Transfer</label>
+                </div>
+                <div class="answer-box" id="answer34" data-correct-answer="b">Correct Answer: b) Write or Store</div>
+            </div>
+
+            <div class="question">
+                <h3>35. Registers are slower than main memory.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q35" value="a"> a) True</label>
+                    <label><input type="radio" name="q35" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer35">Correct Answer: b) False<br><br>Explanation: Registers are faster than main memory.</div>
+            </div>
+
+            <div class="question">
+                <h3>36. The main purpose of an Operating System (OS) is to:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q36" value="a"> a) Translate programs into machine language</label>
+                    <label><input type="radio" name="q36" value="b"> b) Manage hardware and software resources</label>
+                    <label><input type="radio" name="q36" value="c"> c) Increase CPU clock speed</label>
+                    <label><input type="radio" name="q36" value="d"> d) Control only the input/output devices</label>
+                </div>
+                <div class="answer-box" id="answer36" data-correct-answer="b">Correct Answer: b) Manage hardware and software resources</div>
+            </div>
+
+            <div class="question">
+                <h3>37. What is a process in computing?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q37" value="a"> a) A communication link between systems</label>
+                    <label><input type="radio" name="q37" value="b"> b) A hardware unit that performs computations</label>
+                    <label><input type="radio" name="q37" value="c"> c) A stored program waiting to be loaded</label>
+                    <label><input type="radio" name="q37" value="d"> d) An instance of a program currently being executed</label>
+                </div>
+                <div class="answer-box" id="answer37" data-correct-answer="d">Correct Answer: d) An instance of a program currently being executed</div>
+            </div>
+
+            <div class="question">
+                <h3>38. Which of the following is NOT a component of a process?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q38" value="a"> a) Executable code</label>
+                    <label><input type="radio" name="q38" value="b"> b) Process state</label>
+                    <label><input type="radio" name="q38" value="c"> c) Printer driver</label>
+                    <label><input type="radio" name="q38" value="d"> d) Security information</label>
+                </div>
+                <div class="answer-box" id="answer38" data-correct-answer="c">Correct Answer: c) Printer driver</div>
+            </div>
+
+            <div class="question">
+                <h3>39. When a process is ready, it means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q39" value="a"> a) It's prepared to run but waiting for CPU time</label>
+                    <label><input type="radio" name="q39" value="b"> b) It's currently executing instructions</label>
+                    <label><input type="radio" name="q39" value="c"> c) It's paused until an event occurs (like I/O input)</label>
+                    <label><input type="radio" name="q39" value="d"> d) It has finished execution</label>
+                </div>
+                <div class="answer-box" id="answer39" data-correct-answer="a">Correct Answer: a) It's prepared to run but waiting for CPU time</div>
+            </div>
+
+            <div class="question">
+                <h3>40. When a process is waiting, it means:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q40" value="a"> a) It's prepared to run but waiting for CPU time</label>
+                    <label><input type="radio" name="q40" value="b"> b) It's currently executing instructions</label>
+                    <label><input type="radio" name="q40" value="c"> c) It's paused until an event occurs (like I/O input)</label>
+                    <label><input type="radio" name="q40" value="d"> d) It has finished execution</label>
+                </div>
+                <div class="answer-box" id="answer40" data-correct-answer="c">Correct Answer: c) It's paused until an event occurs (like I/O input)</div>
+            </div>
+
+            <div class="question">
+                <h3>41. What is Multitasking?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q41" value="a"> a) Running multiple processes at the same time</label>
+                    <label><input type="radio" name="q41" value="b"> b) Running one process repeatedly</label>
+                    <label><input type="radio" name="q41" value="c"> c) Storing multiple programs in memory without execution</label>
+                    <label><input type="radio" name="q41" value="d"> d) Using multiple CPUs for a single process</label>
+                </div>
+                <div class="answer-box" id="answer41" data-correct-answer="a">Correct Answer: a) Running multiple processes at the same time</div>
+            </div>
+
+            <div class="question">
+                <h3>42. Which of the following is true about threads?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q42" value="a"> a) They are independent programs that cannot share memory</label>
+                    <label><input type="radio" name="q42" value="b"> b) The smallest unit of execution within a process</label>
+                    <label><input type="radio" name="q42" value="c"> c) Always run on separate processors</label>
+                    <label><input type="radio" name="q42" value="d"> d) Do not consume any system resources</label>
+                </div>
+                <div class="answer-box" id="answer42" data-correct-answer="b">Correct Answer: b) The smallest unit of execution within a process</div>
+            </div>
+
+
+            <div class="question">
+                <h3>43. Most modern operating systems are single-tasking.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q43" value="a"> a) True</label>
+                    <label><input type="radio" name="q43" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer43" data-correct-answer="b">Correct Answer: b) False<br><br>Explanation: Most modern operating systems are multitasking.</div>
+            </div>
+
+            <div class="question">
+                <h3>44. What is the main purpose of hardware multithreading?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q44" value="a"> a) To keep the CPU busy when a thread is stalled</label>
+                    <label><input type="radio" name="q44" value="b"> b) To store thread data permanently in memory</label>
+                    <label><input type="radio" name="q44" value="c"> c) To replace multiple CPU cores</label>
+                    <label><input type="radio" name="q44" value="d"> d) To slow down instruction execution</label>
+                </div>
+                <div class="answer-box" id="answer44" data-correct-answer="a">Correct Answer: a) To keep the CPU busy when a thread is stalled</div>
+            </div>
+
+            <div class="question">
+                <h3>45. Processes are lighter and faster than threads.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q45" value="a"> a) True</label>
+                    <label><input type="radio" name="q45" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer45" data-correct-answer="b">Correct Answer: b) False<br><br>Explanation: Threads are lighter and faster than processes.</div>
+            </div>
+
+            <div class="question">
+                <h3>46. A process and a program are exactly the same thing.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q46" value="a"> a) True</label>
+                    <label><input type="radio" name="q46" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer46" data-correct-answer="b">Correct Answer: b) False<br><br>Explanation: A process is a running instance of a program.</div>
+            </div>
+
+            <div class="question">
+                <h3>47. Starting a new thread is called forking and ending it is called joining.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q47" value="a"> a) True</label>
+                    <label><input type="radio" name="q47" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer47" data-correct-answer="a">Correct Answer: a) True</div>
+            </div>
+
+            <div class="question">
+                <h3>48. A CPU cache is best described as:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q48" value="a"> a) Small and slow memory that stores used data</label>
+                    <label><input type="radio" name="q48" value="b"> b) Part of the hard disk</label>
+                    <label><input type="radio" name="q48" value="c"> c) Small and fast memory that stores used data</label>
+                    <label><input type="radio" name="q48" value="d"> d) Tool that saves memory</label>
+                </div>
+                <div class="answer-box" id="answer48" data-correct-answer="c">Correct Answer: c) Small and fast memory that stores used data</div>
+            </div>
+
+            <div class="question">
+                <h3>49. Virtual memory primarily acts as:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q49" value="a"> a) A cache for main memory (RAM)</label>
+                    <label><input type="radio" name="q49" value="b"> b) A cache for CPU registers</label>
+                    <label><input type="radio" name="q49" value="c"> c) A cache for secondary storage (disk/SSD)</label>
+                    <label><input type="radio" name="q49" value="d"> d) A replacement for the instruction set</label>
+                </div>
+                <div class="answer-box" id="answer49" data-correct-answer="c">Correct Answer: c) A cache for secondary storage (disk/SSD)</div>
+            </div>
+
+            <div class="question">
+                <h3>50. Which parallelism executes multiple instructions in the same thread?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q50" value="a"> a) Thread-Level Parallelism (TLP)</label>
+                    <label><input type="radio" name="q50" value="b"> b) Instruction-Level Parallelism (ILP)</label>
+                    <label><input type="radio" name="q50" value="c"> c) Pipelining</label>
+                    <label><input type="radio" name="q50" value="d"> d) Cache Memory</label>
+                </div>
+                <div class="answer-box" id="answer50" data-correct-answer="b">Correct Answer: b) Instruction-Level Parallelism (ILP)</div>
+            </div>
+
+            <div class="question">
+                <h3>51. Which parallelism executes multiple threads at the same time?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q51" value="a"> a) Thread-Level Parallelism (TLP)</label>
+                    <label><input type="radio" name="q51" value="b"> b) Instruction-Level Parallelism (ILP)</label>
+                    <label><input type="radio" name="q51" value="c"> c) Pipelining</label>
+                    <label><input type="radio" name="q51" value="d"> d) Cache Memory</label>
+                </div>
+                <div class="answer-box" id="answer51" data-correct-answer="a">Correct Answer: a) Thread-Level Parallelism (TLP)</div>
+            </div>
+
+            <div class="question">
+                <h3>52. A processor that supports dynamic multiple issue is often called:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q52" value="a"> a) Microcoded</label>
+                    <label><input type="radio" name="q52" value="b"> b) Superscalar</label>
+                    <label><input type="radio" name="q52" value="c"> c) Single-issue</label>
+                    <label><input type="radio" name="q52" value="d"> d) Segmented</label>
+                </div>
+                <div class="answer-box" id="answer52" data-correct-answer="b">Correct Answer: b) Superscalar</div>
+            </div>
+
+            <div class="question">
+                <h3>53. Which type of multithreading switches threads after each instruction?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q53" value="a"> a) Fine-Grained Multithreading</label>
+                    <label><input type="radio" name="q53" value="b"> b) Coarse-Grained Multithreading</label>
+                    <label><input type="radio" name="q53" value="c"> c) Simultaneous Multithreading (SMT)</label>
+                    <label><input type="radio" name="q53" value="d"> d) None of the above</label>
+                </div>
+                <div class="answer-box" id="answer53" data-correct-answer="a">Correct Answer: a) Fine-Grained Multithreading</div>
+            </div>
+
+            <div class="question">
+                <h3>54. The main goal of both software and hardware techniques is to exploit:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q54" value="a"> a) Write-back cache</label>
+                    <label><input type="radio" name="q54" value="b"> b) Thread-Level Parallelism (TLP)</label>
+                    <label><input type="radio" name="q54" value="c"> c) Virtual memory</label>
+                    <label><input type="radio" name="q54" value="d"> d) Instruction-Level Parallelism (ILP)</label>
+                </div>
+                <div class="answer-box" id="answer54" data-correct-answer="d">Correct Answer: d) Instruction-Level Parallelism (ILP)</div>
+            </div>
+
+            <div class="question">
+                <h3>55. Which type of multithreading switches threads only during long stalls?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q55" value="a"> a) Fine-Grained Multithreading</label>
+                    <label><input type="radio" name="q55" value="b"> b) Coarse-Grained Multithreading</label>
+                    <label><input type="radio" name="q55" value="c"> c) Simultaneous Multithreading (SMT)</label>
+                    <label><input type="radio" name="q55" value="d"> d) None of the above</label>
+                </div>
+                <div class="answer-box" id="answer55" data-correct-answer="b">Correct Answer: b) Coarse-Grained Multithreading</div>
+            </div>
+
+            <div class="question">
+                <h3>56. Which type of multithreading allows multiple threads to execute instructions at the same time?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q56" value="a"> a) Fine-Grained Multithreading</label>
+                    <label><input type="radio" name="q56" value="b"> b) Coarse-Grained Multithreading</label>
+                    <label><input type="radio" name="q56" value="c"> c) Simultaneous Multithreading (SMT)</label>
+                    <label><input type="radio" name="q56" value="d"> d) None of the above</label>
+                </div>
+                <div class="answer-box" id="answer56" data-correct-answer="c">Correct Answer: c) Simultaneous Multithreading (SMT)</div>
+            </div>
+
+            <div class="question">
+                <h3>57. Which parallel hardware is usually not visible to the programmer?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q57" value="a"> a) Multiple issue and pipelining</label>
+                    <label><input type="radio" name="q57" value="b"> b) Thread-level parallelism (TLP)</label>
+                    <label><input type="radio" name="q57" value="c"> c) Modifying source code</label>
+                    <label><input type="radio" name="q57" value="d"> d) Flynn's taxonomy</label>
+                </div>
+                <div class="answer-box" id="answer57" data-correct-answer="a">Correct Answer: a) Multiple issue and pipelining</div>
+            </div>
+
+            <div class="question">
+                <h3>58. A basic parallel computer architecture mainly consists of:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q58" value="a"> a) Memory modules</label>
+                    <label><input type="radio" name="q58" value="b"> b) Interconnection network</label>
+                    <label><input type="radio" name="q58" value="c"> c) processors (cores)</label>
+                    <label><input type="radio" name="q58" value="d"> d) All of above</label>
+                </div>
+                <div class="answer-box" id="answer58" data-correct-answer="d">Correct Answer: d) All of above</div>
+            </div>
+
+            <div class="question">
+                <h3>59. Modern GPUs often optimize performance using:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q59" value="a"> a) SISD</label>
+                    <label><input type="radio" name="q59" value="b"> b) SIMD</label>
+                    <label><input type="radio" name="q59" value="c"> c) MISD</label>
+                    <label><input type="radio" name="q59" value="d"> d) MIMD</label>
+                </div>
+                <div class="answer-box" id="answer59" data-correct-answer="b">Correct Answer: b) SIMD</div>
+            </div>
+
+            <div class="question">
+                <h3>60. In MIMD systems, processors:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q60" value="a"> a) Execute the same instruction on different data</label>
+                    <label><input type="radio" name="q60" value="b"> b) Execute different instructions on different data</label>
+                    <label><input type="radio" name="q60" value="c"> c) Execute the same instruction on the same data</label>
+                    <label><input type="radio" name="q60" value="d"> d) Execute one instruction on one data</label>
+                </div>
+                <div class="answer-box" id="answer60" data-correct-answer="b">Correct Answer: b) Execute different instructions on different data</div>
+            </div>
+
+            <div class="question">
+                <h3>61. SIMD is best suited to support:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q61" value="a"> a) Control parallelism</label>
+                    <label><input type="radio" name="q61" value="b"> b) Data parallelism</label>
+                    <label><input type="radio" name="q61" value="c"> c) Disk parallelism</label>
+                    <label><input type="radio" name="q61" value="d"> d) Network parallelism</label>
+                </div>
+                <div class="answer-box" id="answer61" data-correct-answer="b">Correct Answer: b) Data parallelism</div>
+            </div>
+
+            <div class="question">
+                <h3>62. A vector processor primarily operates on:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q62" value="a"> a) Single data values</label>
+                    <label><input type="radio" name="q62" value="b"> b) Instruction queues</label>
+                    <label><input type="radio" name="q62" value="c"> c) Data vectors</label>
+                    <label><input type="radio" name="q62" value="d"> d) Memory blocks</label>
+                </div>
+                <div class="answer-box" id="answer62" data-correct-answer="c">Correct Answer: c) Data vectors</div>
+            </div>
+
+            <div class="question">
+                <h3>63. A major advantage of vector processors is that they are generally:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q63" value="a"> a) Complex control logic</label>
+                    <label><input type="radio" name="q63" value="b"> b) Improved memory utilization</label>
+                    <label><input type="radio" name="q63" value="c"> c) High branching efficiency</label>
+                    <label><input type="radio" name="q63" value="d"> d) Increased instruction dependency</label>
+                </div>
+                <div class="answer-box" id="answer63" data-correct-answer="b">Correct Answer: b) Improved memory utilization</div>
+            </div>
+
+            <div class="question">
+                <h3>64. Which of the following best describes MIMD systems?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q64" value="a"> a) Highly specialized</label>
+                    <label><input type="radio" name="q64" value="b"> b) Rare in modern computers</label>
+                    <label><input type="radio" name="q64" value="c"> c) Used only in supercomputers</label>
+                    <label><input type="radio" name="q64" value="d"> d) The most common modern architecture</label>
+                </div>
+                <div class="answer-box" id="answer64" data-correct-answer="d">Correct Answer: d) The most common modern architecture</div>
+            </div>
+
+            <div class="question">
+                <h3>65. Which architecture is best suited for tasks such as image processing and matrix operations?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q65" value="a"> a) SISD</label>
+                    <label><input type="radio" name="q65" value="b"> b) SIMD</label>
+                    <label><input type="radio" name="q65" value="c"> c) MISD</label>
+                    <label><input type="radio" name="q65" value="d"> d) MIMD</label>
+                </div>
+                <div class="answer-box" id="answer65" data-correct-answer="b">Correct Answer: b) SIMD</div>
+            </div>
+
+            <div class="question">
+                <h3>66. One major drawback of SIMD architecture is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q66" value="a"> a) High power consumption</label>
+                    <label><input type="radio" name="q66" value="b"> b) Data dependency</label>
+                    <label><input type="radio" name="q66" value="c"> c) Some processing units remain idle</label>
+                    <label><input type="radio" name="q66" value="d"> d) High memory cost</label>
+                </div>
+                <div class="answer-box" id="answer66" data-correct-answer="c">Correct Answer: c) Some processing units remain idle</div>
+            </div>
+
+            <div class="question">
+                <h3>67. Which term describes the time it takes for data to travel between processor and memory?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q67" value="a"> a) Bandwidth</label>
+                    <label><input type="radio" name="q67" value="b"> b) Contention</label>
+                    <label><input type="radio" name="q67" value="c"> c) Latency</label>
+                    <label><input type="radio" name="q67" value="d"> d) Throughput</label>
+                </div>
+                <div class="answer-box" id="answer67" data-correct-answer="c">Correct Answer: c) Latency</div>
+            </div>
+
+            <div class="question">
+                <h3>68. Which term refers to the amount of data that can be transferred between processor and memory in a given time?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q68" value="a"> a) Latency</label>
+                    <label><input type="radio" name="q68" value="b"> b) Bandwidth</label>
+                    <label><input type="radio" name="q68" value="c"> c) Contention</label>
+                    <label><input type="radio" name="q68" value="d"> d) Cache miss</label>
+                </div>
+                <div class="answer-box" id="answer68" data-correct-answer="b">Correct Answer: b) Bandwidth</div>
+            </div>
+
+            <div class="question">
+                <h3>69. A major challenge of shared memory systems is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q69" value="a"> a) Lack of memory</label>
+                    <label><input type="radio" name="q69" value="b"> b) Contention among processors</label>
+                    <label><input type="radio" name="q69" value="c"> c) Slow individual processors</label>
+                    <label><input type="radio" name="q69" value="d"> d) Inability to store data</label>
+                </div>
+                <div class="answer-box" id="answer69" data-correct-answer="b">Correct Answer: b) Contention among processors</div>
+            </div>
+
+            <div class="question">
+                <h3>70. In a UMA system:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q70" value="a"> a) Processors access memory at different speeds</label>
+                    <label><input type="radio" name="q70" value="b"> b) Processors have private memories only</label>
+                    <label><input type="radio" name="q70" value="c"> c) All processors access memory at the same speed</label>
+                    <label><input type="radio" name="q70" value="d"> d) Memory cannot be shared</label>
+                </div>
+                <div class="answer-box" id="answer70" data-correct-answer="c">Correct Answer: c) All processors access memory at the same speed</div>
+            </div>
+
+            <div class="question">
+                <h3>71. An advantage of UMA is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q71" value="a"> a) High scalability</label>
+                    <label><input type="radio" name="q71" value="b"> b) Low latency</label>
+                    <label><input type="radio" name="q71" value="c"> c) Limited Scalability</label>
+                    <label><input type="radio" name="q71" value="d"> d) Complex design</label>
+                </div>
+                <div class="answer-box" id="answer71" data-correct-answer="b">Correct Answer: b) Low latency</div>
+            </div>
+
+            <div class="question">
+                <h3>72. A disadvantage of UMA systems is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q72" value="a"> a) High latency</label>
+                    <label><input type="radio" name="q72" value="b"> b) Limited Scalability</label>
+                    <label><input type="radio" name="q72" value="c"> c) Data cannot be shared</label>
+                    <label><input type="radio" name="q72" value="d"> d) Very expensive memory</label>
+                </div>
+                <div class="answer-box" id="answer72" data-correct-answer="b">Correct Answer: b) Limited Scalability</div>
+            </div>
+
+            <div class="question">
+                <h3>73. NUMA are also called SMP (symmetric multiprocessor) because memory access is balanced.</h3>
+                <div class="options">
+                    <label><input type="radio" name="q73" value="a"> a) True</label>
+                    <label><input type="radio" name="q73" value="b"> b) False</label>
+                </div>
+                <div class="answer-box" id="answer73" data-correct-answer="b">Correct Answer: b) False<br><br>Explaination: UMA systems are also called SMP systems because memory access is balanced.</div>
+            </div>
+
+            <div class="question">
+                <h3>74. What is true about NUMA systems?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q74" value="a"> a) All memory access times are equal</label>
+                    <label><input type="radio" name="q74" value="b"> b) Processors access their local memory faster than remote memory</label>
+                    <label><input type="radio" name="q74" value="c"> c) Memory is shared at the same speed</label>
+                    <label><input type="radio" name="q74" value="d"> d) Processors access remote memory faster than their local memory</label>
+                </div>
+                <div class="answer-box" id="answer74" data-correct-answer="b">Correct Answer: b) Processors access their local memory faster than remote memory</div>
+            </div>
+
+            <div class="question">
+                <h3>75. A main advantage of NUMA is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q75" value="a"> a) Simplified programming</label>
+                    <label><input type="radio" name="q75" value="b"> b) Reduced contention on memory</label>
+                    <label><input type="radio" name="q75" value="c"> c) Same access speed for all memory</label>
+                    <label><input type="radio" name="q75" value="d"> d) Low complexity</label>
+                </div>
+                <div class="answer-box" id="answer75" data-correct-answer="b">Correct Answer: b) Reduced contention on memory</div>
+            </div>
+
+            <div class="question">
+                <h3>76. Which statement best describes speculation in processors?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q76" value="a"> a) Executing instructions only after checking all dependencies</label>
+                    <label><input type="radio" name="q76" value="b"> b) Executing instructions in advance based on assumptions</label>
+                    <label><input type="radio" name="q76" value="c"> c) Waiting for user input before executing</label>
+                    <label><input type="radio" name="q76" value="d"> d) Reducing instruction execution time by half</label>
+                </div>
+                <div class="answer-box" id="answer76" data-correct-answer="b">Correct Answer: b) Executing instructions in advance based on assumptions</div>
+            </div>
+
+            <div class="question">
+                <h3>77. A main disadvantage of NUMA is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q77" value="a"> a) Complexity</label>
+                    <label><input type="radio" name="q77" value="b"> b) Higher cost</label>
+                    <label><input type="radio" name="q77" value="c"> c) Performance variability</label>
+                    <label><input type="radio" name="q77" value="d"> d) All of above</label>
+                </div>
+                <div class="answer-box" id="answer77" data-correct-answer="d">Correct Answer: d) All of above</div>
+            </div>
+
+            <div class="question">
+                <h3>78. A common example of hybrid distributed-shared memory systems is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q78" value="a"> a) Single-core PC</label>
+                    <label><input type="radio" name="q78" value="b"> b) Cluster of computers</label>
+                    <label><input type="radio" name="q78" value="c"> c) Mobile phone</label>
+                    <label><input type="radio" name="q78" value="d"> d) Standalone GPU</label>
+                </div>
+                <div class="answer-box" id="answer78" data-correct-answer="b">Correct Answer: b) Cluster of computers</div>
+            </div>
+
+            <div class="question">
+                <h3>79. Which part affects the performance of both distributed and shared memory systems?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q79" value="a"> a) Processor speed</label>
+                    <label><input type="radio" name="q79" value="b"> b) Memory size</label>
+                    <label><input type="radio" name="q79" value="c"> c) Interconnection networks</label>
+                    <label><input type="radio" name="q79" value="d"> d) Cache type</label>
+                </div>
+                <div class="answer-box" id="answer79" data-correct-answer="c">Correct Answer: c) Interconnection networks</div>
+            </div>
+
+            <div class="question">
+                <h3>80. What is a bus interconnect in shared memory systems?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q80" value="a"> a) A network of switches connecting processors and memory</label>
+                    <label><input type="radio" name="q80" value="b"> b) A collection of shared communication wires controlled by hardware</label>
+                    <label><input type="radio" name="q80" value="c"> c) Memory modules connected directly to each other</label>
+                    <label><input type="radio" name="q80" value="d"> d) A type of processor</label>
+                </div>
+                <div class="answer-box" id="answer80" data-correct-answer="b">Correct Answer: b) A collection of shared communication wires controlled by hardware</label></div>
+            </div>
+
+            <div class="question">
+                <h3>81. What is an advantage of bus interconnects?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q81" value="a"> a) High performance for many devices</label>
+                    <label><input type="radio" name="q81" value="b"> b) Eliminates contention</label>
+                    <label><input type="radio" name="q81" value="c"> c) Low cost and flexibility</label>
+                    <label><input type="radio" name="q81" value="d"> d) Very fast communication</label>
+                </div>
+                <div class="answer-box" id="answer81" data-correct-answer="c">Correct Answer: c) Low cost and flexibility</div>
+            </div>
+
+            <div class="question">
+                <h3>82. What is a switched interconnect?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q82" value="a"> a) A simple bus connecting processors and memory</label>
+                    <label><input type="radio" name="q82" value="b"> b) Uses switches to route data between connected devices</label>
+                    <label><input type="radio" name="q82" value="c"> c) Only allows one processor to access memory at a time</label>
+                    <label><input type="radio" name="q82" value="d"> d) Cannot connect memory modules</label>
+                </div>
+                <div class="answer-box" id="answer82" data-correct-answer="b">Correct Answer: b) Uses switches to route data between connected devices</div>
+            </div>
+
+            <div class="question">
+                <h3>83. What is true about switched interconnects compared to buses?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q83" value="a"> a) They are lower in cost</label>
+                    <label><input type="radio" name="q83" value="b"> b) They provide faster communication</label>
+                    <label><input type="radio" name="q83" value="c"> c) They have a simpler design</label>
+                    <label><input type="radio" name="q83" value="d"> d) They require less memory</label>
+                </div>
+                <div class="answer-box" id="answer83" data-correct-answer="b">Correct Answer: b) They provide faster communication</div>
+            </div>
+
+            <div class="question">
+                <h3>84. Which of the following are examples of indirect interconnection networks?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q84" value="a"> a) Bus and Ring</label>
+                    <label><input type="radio" name="q84" value="b"> b) Crossbar and Omega network</label>
+                    <label><input type="radio" name="q84" value="c"> c) UMA and NUMA</label>
+                    <label><input type="radio" name="q84" value="d"> d) Ring and Toroidal Mesh</label>
+                </div>
+                <div class="answer-box" id="answer84" data-correct-answer="b">Correct Answer: b) Crossbar and Omega network</div>
+            </div>
+
+            <div class="question">
+                <h3>85. Which of the following are examples of direct interconnection networks?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q85" value="a"> a) Crossbar and Omega network</label>
+                    <label><input type="radio" name="q85" value="b"> b) Ring and Toroidal Mesh</label>
+                    <label><input type="radio" name="q85" value="c"> c) Bus and Ring</label>
+                    <label><input type="radio" name="q85" value="d"> d) UMA and NUMA</label>
+                </div>
+                <div class="answer-box" id="answer85" data-correct-answer="b">Correct Answer: b) Ring and Toroidal Mesh</div>
+            </div>
+
+            <div class="question">
+                <h3>86. The formula to calculate message transfer time is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q86" value="a"> a) Time = Latency × Bandwidth</label>
+                    <label><input type="radio" name="q86" value="b"> b) Time = Latency + (Message Size / Bandwidth)</label>
+                    <label><input type="radio" name="q86" value="c"> c) Time = Message Size – Bandwidth</label>
+                    <label><input type="radio" name="q86" value="d"> d) Time = Latency ÷ Bandwidth</label>
+                </div>
+                <div class="answer-box" id="answer86" data-correct-answer="b">Correct Answer: b) Time = Latency + (Message Size / Bandwidth)</div>
+            </div>
+
+            <div class="question">
+                <h3>87. Which network is a highly connected direct interconnection used in actual systems?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q87" value="a"> a) Bus network</label>
+                    <label><input type="radio" name="q87" value="b"> b) Star network</label>
+                    <label><input type="radio" name="q87" value="c"> c) Ring network</label>
+                    <label><input type="radio" name="q87" value="d"> d) Hypercube network</label>
+                </div>
+                <div class="answer-box" id="answer87" data-correct-answer="d">Correct Answer: d) Hypercube network</div>
+            </div>
+
+            <div class="question">
+                <h3>88. Which network type connects devices in a loop?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q88" value="a"> a) Bus network</label>
+                    <label><input type="radio" name="q88" value="b"> b) Star network</label>
+                    <label><input type="radio" name="q88" value="c"> c) Ring network</label>
+                    <label><input type="radio" name="q88" value="d"> d) Hypercube network</label>
+                </div>
+                <div class="answer-box" id="answer88" data-correct-answer="c">Correct Answer: c) Ring network</div>
+            </div>
+
+            <div class="question">
+                <h3>89. Which network type allows multiple paths between devices, increasing complexity?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q89" value="a"> a) Bus network</label>
+                    <label><input type="radio" name="q89" value="b"> b) Ring network</label>
+                    <label><input type="radio" name="q89" value="c"> c) Toroidal Mesh</label>
+                    <label><input type="radio" name="q89" value="d"> d) Switched Bus</label>
+                </div>
+                <div class="answer-box" id="answer89" data-correct-answer="c">Correct Answer: c) Toroidal Mesh</div>
+            </div>
+
+            <div class="question">
+                <h3>90. Temporal locality refers to:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q90" value="a"> a) Accessing data near the recently accessed data</label>
+                    <label><input type="radio" name="q90" value="b"> b) Accessing the same data again in the near future</label>
+                    <label><input type="radio" name="q90" value="c"> c) Storing data permanently</label>
+                    <label><input type="radio" name="q90" value="d"> d) Accessing data randomly</label>
+                </div>
+                <div class="answer-box" id="answer90" data-correct-answer="b">Correct Answer: b) Accessing the same data again in the near future</div>
+            </div>
+
+            <div class="question">
+                <h3>91. Spatial locality refers to:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q91" value="a"> a) Accessing data near the recently accessed data</label>
+                    <label><input type="radio" name="q91" value="b"> b) Accessing the same data again in the near future</label>
+                    <label><input type="radio" name="q91" value="c"> c) Storing data in registers</label>
+                    <label><input type="radio" name="q91" value="d"> d) Using multiple caches</label>
+                </div>
+                <div class="answer-box" id="answer91" data-correct-answer="a">Correct Answer: a) Accessing data near the recently accessed data</div>
+            </div>
+
+            <div class="question">
+                <h3>92. Which cache level is smallest and fastest?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q92" value="a"> a) L3</label>
+                    <label><input type="radio" name="q92" value="b"> b) L2</label>
+                    <label><input type="radio" name="q92" value="c"> c) L1</label>
+                    <label><input type="radio" name="q92" value="d"> d) All of above</label>
+                </div>
+                <div class="answer-box" id="answer92" data-correct-answer="c">Correct Answer: c) L1</div>
+            </div>
+
+            <div class="question">
+                <h3>93. A cache miss occurs when:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q93" value="a"> a) Data is read from the cache successfully</label>
+                    <label><input type="radio" name="q93" value="b"> b) The cache is full but the data is present</label>
+                    <label><input type="radio" name="q93" value="c"> c) The requested data is not found in the cache</label>
+                    <label><input type="radio" name="q93" value="d"> d) The CPU executes instructions from multiple threads</label>
+                </div>
+                <div class="answer-box" id="answer93" data-correct-answer="c">Correct Answer: c) The requested data is not found in the cache</div>
+            </div>
+
+            <div class="question">
+                <h3>94. Which write strategy updates the main memory at the same time the data is written to the cache?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q94" value="a"> a) Write-back</label>
+                    <label><input type="radio" name="q94" value="b"> b) Write-through</label>
+                    <label><input type="radio" name="q94" value="c"> c) Dirty write</label>
+                    <label><input type="radio" name="q94" value="d"> d) Cache replacement</label>
+                </div>
+                <div class="answer-box" id="answer94" data-correct-answer="b">Correct Answer: b) Write-through</div>
+            </div>
+
+            <div class="question">
+                <h3>95. Which cache write strategy marks data as dirty and writes it to main memory only when the cache line is replaced?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q95" value="a"> a) Write-through</label>
+                    <label><input type="radio" name="q95" value="b"> b) Direct mapping</label>
+                    <label><input type="radio" name="q95" value="c"> c) Write-back</label>
+                    <label><input type="radio" name="q95" value="d"> d) Cache flushing</label>
+                </div>
+                <div class="answer-box" id="answer95" data-correct-answer="c">Correct Answer: c) Write-back</div>
+            </div>
+
+            <div class="question">
+                <h3>96. Cache coherence ensures that:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q96" value="a"> a) All cores see the same data in their caches</label>
+                    <label><input type="radio" name="q96" value="b"> b) Each core can have completely different data without updates</label>
+                    <label><input type="radio" name="q96" value="c"> c) Caches are bypassed for every memory access</label>
+                    <label><input type="radio" name="q96" value="d"> d) Memory updates are ignored by caches</label>
+                </div>
+                <div class="answer-box" id="answer96" data-correct-answer="a">Correct Answer: a) All cores see the same data in their caches</div>
+            </div>
+
+            <div class="question">
+                <h3>97. False sharing occurs when:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q97" value="a"> a) Two cores access the exact same data in memory</label>
+                    <label><input type="radio" name="q97" value="b"> b) Two cores access different data on the same cache line</label>
+                    <label><input type="radio" name="q97" value="c"> c) Cache lines are too small to store data</label>
+                    <label><input type="radio" name="q97" value="d"> d) Data is stored only in main memory</label>
+                </div>
+                <div class="answer-box" id="answer97" data-correct-answer="b">Correct Answer: b) Two cores access different data on the same cache line</div>
+            </div>
+
+            <div class="question">
+                <h3>98. One way to reduce false sharing is:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q98" value="a"> a) Use write-through caches only</label>
+                    <label><input type="radio" name="q98" value="b"> b) Increase main memory speed</label>
+                    <label><input type="radio" name="q98" value="c"> c) Apply padding to separate data into different cache lines</label>
+                    <label><input type="radio" name="q98" value="d"> d) Force all cores to access the same cache line</label>
+                </div>
+                <div class="answer-box" id="answer98" data-correct-answer="c">Correct Answer: c) Apply padding to separate data into different cache lines</div>
+            </div>
+
+            <div class="question">
+                <h3>99. Which technique is better for large multicore systems to maintain cache coherence?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q99" value="a"> a) Snooping</label>
+                    <label><input type="radio" name="q99" value="b"> b) Directory-based coherence</label>
+                    <label><input type="radio" name="q99" value="c"> c) Write-through cache</label>
+                    <label><input type="radio" name="q99" value="d"> d) Temporal locality</label>
+                </div>
+                <div class="answer-box" id="answer99" data-correct-answer="b">Correct Answer: b) Directory-based coherence</div>
+            </div>
+
+             <div class="question">
+                <h3>100. What issue can occur in caches?</h3>
+                <div class="code-example">
+                    <pre>struct data {
+    int x;
+    int y;
+};
+struct data shared;
+void core1() { shared.x = 10; }
+void core2() { shared.y = 20; }</pre>
+                </div>
+                <div class="options">
+                    <label><input type="radio" name="q100" value="a"> a) No false sharing</label>
+                    <label><input type="radio" name="q100" value="b"> b) False sharing because a and b are in the same cache line</label>
+                    <label><input type="radio" name="q100" value="c"> c) False sharing because both cores write the same variable</label>
+                    <label><input type="radio" name="q100" value="d"> d) Cache is bypassed</label>
+                </div>
+                <div class="answer-box" id="answer100">Correct Answer: b) False sharing because a and b are in the same cache line</div>
+            </div>
+
+            <div class="question">
+                <h3>101. Who manages CPU caches in a system?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q101" value="a"> a) Operating system</label>
+                    <label><input type="radio" name="q101" value="b"> b) System hardware</label>
+                    <label><input type="radio" name="q101" value="c"> c) User programs</label>
+                    <label><input type="radio" name="q101" value="d"> d) Memory modules</label>
+                </div>
+                <div class="answer-box" id="answer101" data-correct-answer="b">Correct Answer: b) System hardware</div>
+            </div>
+
+            <div class="question">
+                <h3>102. Removing false sharing will:</h3>
+                <div class="options">
+                    <label><input type="radio" name="q102" value="a"> a) Decrease memory size</label>
+                    <label><input type="radio" name="q102" value="b"> b) Improve performance</label>
+                    <label><input type="radio" name="q102" value="c"> c) Make caches unnecessary</label>
+                    <label><input type="radio" name="q102" value="d"> d) Increase bus contention</label>
+                </div>
+                <div class="answer-box" id="answer102" data-correct-answer="b">Correct Answer: b) Improve performance</div>
+            </div>
+        </div>
+
+        <!-- PDF Slides Section -->
+        <div class="slides-section hidden" id="slides-section">
+            <div class="slides-header">
+                سلايدات المادة - Lecture Slides
+            </div>
+            
+            <div class="pdf-controls">
+                <button class="pdf-btn active" onclick="loadPdf('lecture1.pdf', 'Lecture 1')">
+                    <span>📄</span> Lecture 1
+                </button>
+                <button class="pdf-btn" onclick="loadPdf('lecture2.pdf', 'Lecture 2')">
+                    <span>📄</span> Lecture 2
+                </button>
+                <button class="pdf-btn" onclick="loadPdf('lecture3_4.pdf', 'Lectures 3 & 4')">
+                    <span>📄</span> Lectures 3 & 4
+                </button>
+            </div>
+
+            <div class="pdf-viewer-container">
+                <div class="pdf-viewer-header">
+                    <div class="pdf-viewer-title" id="pdf-title">Lecture 1</div>
+                    <div class="pdf-controls-small">
+                        <button class="pdf-nav-btn" onclick="downloadPdf()" title="Download">⤓</button>
+                    </div>
+                </div>
+                <div class="pdf-frame-container">
+                    <div class="pdf-loading" id="pdf-loading">
+                        <div class="pdf-loading-spinner"></div>
+                        <div class="pdf-loading-text">Loading PDF...</div>
+                    </div>
+                    <iframe class="pdf-frame" id="pdf-frame" src="lecture1.pdf" frameborder="0"></iframe>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="toggleSlides()">
+                    <span class="btn-icon">←</span> العودة للأسئلة
+                </button>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            دعواتكم للمساعد الخفي والعاملين على الموقع بالتوفيق والسداد والزوجة الصالحة
+        </div>
+    </div>
+
+    <script>
+        // Quiz functionality
+        function resetQuiz() {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => radio.checked = false);
+
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.style.display = 'none';
+                box.classList.remove('correct', 'incorrect');
+            });
+
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(q => {
+                q.classList.remove('answered-correct', 'answered-incorrect');
+            });
+        }
+
+        function showAllAnswers() {
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                // Get the full answer text from the div
+                const fullAnswer = box.innerHTML;
+                // Extract just the "Correct Answer: X) ..." part (up to the first <br> or end of string)
+                const correctAnswerMatch = fullAnswer.match(/Correct Answer:\s*[a-d]\)[^<]*/);
+                const correctAnswerText = correctAnswerMatch ? correctAnswerMatch[0] : fullAnswer;
+                
+                box.innerHTML = '✅ ' + correctAnswerText;
+                box.style.display = 'block';
+                box.classList.add('correct');
+            });
+        }
+
+        function hideAllAnswers() {
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.style.display = 'none';
+                box.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if(body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<span class="btn-icon">🌙</span> Dark Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<span class="btn-icon">☀️</span> Light Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Slides toggle
+        let slidesVisible = false;
+        function toggleSlides() {
+            const slidesSection = document.getElementById('slides-section');
+            const slidesToggle = document.getElementById('slidesToggle');
+            const questionsSection = document.getElementById('questions-section');
+            
+            if(!slidesVisible) {
+                slidesSection.classList.remove('hidden');
+                questionsSection.style.display = 'none';
+                slidesToggle.innerHTML = '<span class="btn-icon">📝</span> الأسئلة';
+                slidesVisible = true;
+                // Scroll to slides
+                slidesSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                slidesSection.classList.add('hidden');
+                questionsSection.style.display = 'block';
+                slidesToggle.innerHTML = '<span class="btn-icon">📚</span> سلايدات المادة';
+                slidesVisible = false;
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // PDF functionality
+        let currentPdf = 'lecture1.pdf';
+
+        function loadPdf(pdfFile, title) {
+            currentPdf = pdfFile;
+            
+            // Update active button
+            document.querySelectorAll('.pdf-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update title
+            document.getElementById('pdf-title').textContent = title;
+            
+            // Show loading
+            const loading = document.getElementById('pdf-loading');
+            const frame = document.getElementById('pdf-frame');
+            
+            loading.style.display = 'flex';
+            frame.style.display = 'none';
+            
+            // Set iframe source
+            frame.src = pdfFile;
+            
+            // Wait for PDF to load
+            frame.onload = function() {
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    frame.style.display = 'block';
+                }, 500);
+            };
+        }
+
+        function downloadPdf() {
+            const link = document.createElement('a');
+            link.href = currentPdf;
+            link.download = currentPdf;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Event listeners for radio buttons
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const questionNumber = e.target.name.substring(1);
+                const answerBox = document.getElementById(`answer${questionNumber}`);
+                const questionContainer = e.target.closest('.question');
+                
+                // Store the original content if not already stored
+                if (!answerBox.getAttribute('data-original-html')) {
+                    answerBox.setAttribute('data-original-html', answerBox.innerHTML);
+                }
+                
+                const originalHTML = answerBox.getAttribute('data-original-html');
+                
+                // Extract the correct answer letter and full answer
+                const correctAnswerMatch = originalHTML.match(/Correct Answer:\s*([a-d]\)[^<]+)/i);
+                const correctAnswerFull = correctAnswerMatch ? correctAnswerMatch[1] : '';
+                const correctAnswerLetterMatch = originalHTML.match(/Correct Answer:\s*([a-d])/i);
+                const correctAnswerLetter = correctAnswerLetterMatch ? correctAnswerLetterMatch[1] : '';
+                const userAnswer = e.target.value;
+
+                // Check if there's an explanation (contains "Explanation:" or "<br><br>")
+                const hasExplanation = originalHTML.includes('Explanation:') || originalHTML.includes('<br><br>');
+                
+                // Clean old classes
+                questionContainer.classList.remove('answered-correct', 'answered-incorrect');
+
+                if (userAnswer === correctAnswerLetter) {
+                    // CORRECT ANSWER
+                    if (hasExplanation) {
+                        // Extract the explanation part
+                        const explanationPart = originalHTML.split('<br><br>').slice(1).join('<br><br>');
+                        answerBox.innerHTML = '✅ Correct !<br><br>' + explanationPart;
+                    } else {
+                        answerBox.innerHTML = '✅ Correct !';
+                    }
+                    answerBox.classList.add('correct');
+                    answerBox.classList.remove('incorrect');
+                    questionContainer.classList.add('answered-correct');
+                } else {
+                    // INCORRECT ANSWER
+                    if (hasExplanation) {
+                        // Keep the full answer with explanation
+                        answerBox.innerHTML = '❌ Incorrect. ' + originalHTML.replace('Correct Answer:', 'Correct Answer:');
+                    } else {
+                        // Just show the correct answer letter
+                        answerBox.innerHTML = '❌ Incorrect. Correct Answer: ' + correctAnswerLetter;
+                    }
+                    answerBox.classList.add('incorrect');
+                    answerBox.classList.remove('correct');
+                    questionContainer.classList.add('answered-incorrect');
+                }
+                answerBox.style.display = 'block';
+            });
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if(savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<span class="btn-icon">☀️</span> Light Mode';
+            }
+            
+            // Add animations to questions
+            const questions = document.querySelectorAll('.question');
+            questions.forEach((question, index) => {
+                question.style.animationDelay = `${index * 0.05}s`;
+                question.style.animation = 'fadeIn 0.5s ease forwards';
+            });
+            
+            // Initialize PDF viewer
+            const frame = document.getElementById('pdf-frame');
+            frame.onload = function() {
+                setTimeout(() => {
+                    document.getElementById('pdf-loading').style.display = 'none';
+                    frame.style.display = 'block';
+                }, 800);
+            };
+        });
+    </script>
+</body>
+</html>
