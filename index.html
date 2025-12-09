@@ -132,8 +132,6 @@
         font-size: 3rem;
     }
 
-
-
     /* Enhanced Mobile PDF Viewing */
     @media (max-width: 768px) {
         .pdf-viewer-container {
@@ -1895,14 +1893,10 @@ void core2() { shared.y = 20; }</pre>
                 </button>
             </div>
 
-                        <!-- Alternative: PDF.js Viewer -->
-            <div class="pdf-viewer-container" id="pdfjs-viewer">
+            <div class="pdf-viewer-container">
                 <div class="pdf-viewer-header">
                     <div class="pdf-viewer-title" id="pdf-title">Lecture 1</div>
                     <div class="pdf-controls-small">
-                        <button class="pdf-nav-btn" onclick="prevPage()" title="Previous">◀</button>
-                        <span id="page-info" style="color: white; font-size: 0.9rem;">Page 1/10</span>
-                        <button class="pdf-nav-btn" onclick="nextPage()" title="Next">▶</button>
                         <button class="pdf-nav-btn" onclick="downloadPdf()" title="Download">⤓</button>
                     </div>
                 </div>
@@ -1911,9 +1905,7 @@ void core2() { shared.y = 20; }</pre>
                         <div class="pdf-loading-spinner"></div>
                         <div class="pdf-loading-text">Loading PDF...</div>
                     </div>
-                    <div id="pdf-canvas-container" style="display: none;">
-                        <canvas id="pdf-canvas"></canvas>
-                    </div>
+                    <iframe class="pdf-frame" id="pdf-frame" src="lecture1.pdf" frameborder="0"></iframe>
                 </div>
             </div>
             
@@ -2161,94 +2153,6 @@ void core2() { shared.y = 20; }</pre>
                 }, 800);
             };
         });
-
-        // PDF.js Implementation (Optional - More Control)
-        let pdfDoc = null;
-        let pageNum = 1;
-        let pageRendering = false;
-        let pageNumPending = null;
-        const scale = 1.5;
-
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(function(page) {
-                const canvas = document.getElementById('pdf-canvas');
-                const ctx = canvas.getContext('2d');
-                const viewport = page.getViewport({scale: scale});
-                
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                const renderTask = page.render(renderContext);
-                
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                    
-                    // Update page info
-                    document.getElementById('page-info').textContent = 
-                        `Page ${num}/${pdfDoc.numPages}`;
-                });
-            });
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
-
-        function prevPage() {
-            if (pageNum <= 1) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        }
-
-        function nextPage() {
-            if (pageNum >= pdfDoc.numPages) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        }
-
-        // Load PDF using PDF.js
-        function loadPdfWithPDFJS(pdfFile, title) {
-            const loading = document.getElementById('pdf-loading');
-            const canvasContainer = document.getElementById('pdf-canvas-container');
-            
-            loading.style.display = 'flex';
-            canvasContainer.style.display = 'none';
-            
-            // Load PDF
-            pdfjsLib.getDocument(pdfFile).promise.then(function(pdf) {
-                pdfDoc = pdf;
-                pageNum = 1;
-                
-                loading.style.display = 'none';
-                canvasContainer.style.display = 'block';
-                
-                renderPage(pageNum);
-            }).catch(function(error) {
-                loading.innerHTML = `
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-                        <div style="color: var(--text-color); font-weight: 500; margin-bottom: 1rem;">Error loading PDF</div>
-                        <button class="btn" onclick="downloadPdf()" style="margin-top: 1rem;">
-                            <span>⤓</span> Download PDF
-                        </button>
-                    </div>
-                `;
-            });
-        }
-
     </script>
 </body>
 </html>
