@@ -811,7 +811,7 @@
         
         <div class="controls">
             <button class="btn" onclick="resetQuiz()">
-                <span class="btn-icon">🔄</span> Reset Quiz
+                <span class="btn-icon">🔄</span> Reset
             </button>
             <button class="btn" onclick="showAllAnswers()">
                 <span class="btn-icon">👁️</span> Show Answers
@@ -2028,8 +2028,7 @@ void core2() { shared.y = 20; }</pre>
     </div>
 
     <script>
-        // Quiz functionality
-        function resetQuiz() {
+                function resetQuiz() {
             const radioButtons = document.querySelectorAll('input[type="radio"]');
             radioButtons.forEach(radio => radio.checked = false);
 
@@ -2037,6 +2036,35 @@ void core2() { shared.y = 20; }</pre>
             answerBoxes.forEach(box => {
                 box.style.display = 'none';
                 box.classList.remove('correct', 'incorrect');
+                // Restore to the original content (use data-original-html if exists, otherwise current HTML)
+                const originalHTML = box.getAttribute('data-original-html') || box.innerHTML;
+                // Clean up any emoji or incorrect prefixes that might be there
+                let cleanHTML = originalHTML;
+                
+                // Remove any emoji prefixes and incorrect/correct prefixes
+                if (cleanHTML.includes('✅')) {
+                    cleanHTML = cleanHTML.replace('✅ ', '').replace('✅', '');
+                }
+                if (cleanHTML.includes('❌')) {
+                    cleanHTML = cleanHTML.replace('❌ ', '').replace('❌', '');
+                }
+                if (cleanHTML.includes('Incorrect. ')) {
+                    cleanHTML = cleanHTML.replace('Incorrect. ', '');
+                }
+                if (cleanHTML.includes('Correct !')) {
+                    // For the "Correct !" case, we need to restore the full original
+                    const storedOriginal = box.getAttribute('data-original-html');
+                    if (storedOriginal) {
+                        cleanHTML = storedOriginal;
+                    }
+                }
+                
+                // Store the cleaned version back as original if it was modified
+                if (cleanHTML !== originalHTML) {
+                    box.setAttribute('data-original-html', cleanHTML);
+                }
+                
+                box.innerHTML = cleanHTML;
             });
 
             const questions = document.querySelectorAll('.question');
@@ -2045,22 +2073,38 @@ void core2() { shared.y = 20; }</pre>
             });
         }
 
-        function showAllAnswers() {
+                function showAllAnswers() {
             const answerBoxes = document.querySelectorAll('.answer-box');
             answerBoxes.forEach(box => {
-                // Get the full answer text from the div
-                const fullAnswer = box.innerHTML;
-                // Extract just the "Correct Answer: X) ..." part (up to the first <br> or end of string)
-                const correctAnswerMatch = fullAnswer.match(/Correct Answer:\s*[a-d]\)[^<]*/);
-                const correctAnswerText = correctAnswerMatch ? correctAnswerMatch[0] : fullAnswer;
+                // Always use the stored original HTML
+                const originalHTML = box.getAttribute('data-original-html') || box.innerHTML;
                 
-                box.innerHTML = '✅ ' + correctAnswerText;
+                // Clean the current content first
+                let cleanHTML = originalHTML;
+                
+                // Remove any existing emoji or incorrect/correct prefixes
+                if (cleanHTML.includes('✅')) {
+                    cleanHTML = cleanHTML.replace('✅ ', '').replace('✅', '');
+                }
+                if (cleanHTML.includes('❌')) {
+                    cleanHTML = cleanHTML.replace('❌ ', '').replace('❌', '');
+                }
+                if (cleanHTML.includes('Incorrect. ')) {
+                    cleanHTML = cleanHTML.replace('Incorrect. ', '');
+                }
+                
+                // Store the cleaned version
+                box.setAttribute('data-original-html', cleanHTML);
+                
+                // Show with correct styling
+                box.innerHTML = cleanHTML;
                 box.style.display = 'block';
                 box.classList.add('correct');
+                box.classList.remove('incorrect');
             });
         }
 
-        function hideAllAnswers() {
+                function hideAllAnswers() {
             const answerBoxes = document.querySelectorAll('.answer-box');
             answerBoxes.forEach(box => {
                 box.style.display = 'none';
@@ -2208,7 +2252,7 @@ void core2() { shared.y = 20; }</pre>
             });
         });
 
-        // Initialize
+                // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             // Set theme
             const savedTheme = localStorage.getItem('theme') || 'light';
@@ -2218,6 +2262,15 @@ void core2() { shared.y = 20; }</pre>
                 document.body.setAttribute('data-theme', 'dark');
                 themeToggle.innerHTML = '<span class="btn-icon">☀️</span> Light Mode';
             }
+            
+            // Store original HTML for all answer boxes
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                // Store the current HTML as original if not already stored
+                if (!box.getAttribute('data-original-html')) {
+                    box.setAttribute('data-original-html', box.innerHTML);
+                }
+            });
             
             // Add animations to questions
             const questions = document.querySelectorAll('.question');
