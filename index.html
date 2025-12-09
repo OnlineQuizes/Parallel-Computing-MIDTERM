@@ -626,6 +626,8 @@
         .pdf-controls {
             margin-bottom: 1.5rem;
         }
+
+.pdf-controls { display: none !important; }
         
         .mobile-pdf-item {
             flex-direction: column;
@@ -728,8 +730,8 @@
             margin: 0.3rem 0;
         }
         
-        .pdf-controls {
-            flex-direction: column;
+       .pdf-controls {
+            display: none !important; /* Hide lecture selection buttons on mobile */
         }
         
         .pdf-btn {
@@ -1985,21 +1987,18 @@ void core2() { shared.y = 20; }</pre>
                     </div>
                     <div class="mobile-pdf-actions">
                         <button class="mobile-pdf-btn open-btn" onclick="openPdfMobile('lecture1.pdf')">Open</button>
-                        <button class="mobile-pdf-btn download-btn" onclick="downloadPdfMobile('lecture1.pdf')">Download</button>
-                    </div>
+                                           </div>
                 </div>
                 <div class="mobile-pdf-item">
                     <div class="mobile-pdf-info">
                         <div class="mobile-pdf-icon">📄</div>
                         <div class="mobile-pdf-details">
                             <div class="mobile-pdf-name">Lecture 2</div>
-                            <div class="mobile-pdf-size">PDF Document</div>
-                        </div>
+                                                   </div>
                     </div>
                     <div class="mobile-pdf-actions">
                         <button class="mobile-pdf-btn open-btn" onclick="openPdfMobile('lecture2.pdf')">Open</button>
-                        <button class="mobile-pdf-btn download-btn" onclick="downloadPdfMobile('lecture2.pdf')">Download</button>
-                    </div>
+                                           </div>
                 </div>
                 <div class="mobile-pdf-item">
                     <div class="mobile-pdf-info">
@@ -2011,8 +2010,7 @@ void core2() { shared.y = 20; }</pre>
                     </div>
                     <div class="mobile-pdf-actions">
                         <button class="mobile-pdf-btn open-btn" onclick="openPdfMobile('lecture3_4.pdf')">Open</button>
-                        <button class="mobile-pdf-btn download-btn" onclick="downloadPdfMobile('lecture3_4.pdf')">Download</button>
-                    </div>
+                                            </div>
                 </div>
             </div>
             
