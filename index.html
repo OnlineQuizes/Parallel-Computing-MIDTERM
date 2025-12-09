@@ -2183,9 +2183,9 @@ void core2() { shared.y = 20; }</pre>
                     if (hasExplanation) {
                         // Extract the explanation part
                         const explanationPart = originalHTML.split('<br><br>').slice(1).join('<br><br>');
-                        answerBox.innerHTML = '✅ Correct !<br><br>' + explanationPart;
+                        answerBox.innerHTML = '✅Correct !<br><br>' + explanationPart;
                     } else {
-                        answerBox.innerHTML = '✅ Correct !';
+                        answerBox.innerHTML = '✅Correct !';
                     }
                     answerBox.classList.add('correct');
                     answerBox.classList.remove('incorrect');
@@ -2194,10 +2194,10 @@ void core2() { shared.y = 20; }</pre>
                     // INCORRECT ANSWER
                     if (hasExplanation) {
                         // Keep the full answer with explanation
-                        answerBox.innerHTML = '❌ Incorrect. ' + originalHTML.replace('Correct Answer:', 'Correct Answer:');
+                        answerBox.innerHTML = '❌Incorrect. ' + originalHTML.replace('Correct Answer:', 'Correct Answer:');
                     } else {
                         // Just show the correct answer letter
-                        answerBox.innerHTML = '❌ Incorrect. Correct Answer: ' + correctAnswerLetter;
+                        answerBox.innerHTML = '❌Incorrect. Correct Answer: ' + correctAnswerLetter;
                     }
                     answerBox.classList.add('incorrect');
                     answerBox.classList.remove('correct');
