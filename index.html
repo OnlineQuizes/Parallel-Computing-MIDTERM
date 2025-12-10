@@ -329,6 +329,49 @@
         border-color: var(--correct-border);
         color: var(--text-color);
     }
+    /* Review Questions Section */
+    .review-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 3px dashed var(--primary-color);
+    }
+
+    .review-questions {
+        margin-top: 2rem;
+    }
+
+    .review-questions .question {
+        cursor: default;
+    }
+
+    .review-questions .question:hover {
+        transform: none;
+        border-color: var(--border-color);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .review-questions .options {
+        background: var(--grammar-bg);
+        border: 2px solid var(--grammar-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .review-questions .options p {
+        margin: 0.8rem 0;
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed var(--border-color);
+    }
+
+    .review-questions .options p:last-child {
+        border-bottom: none;
+    }
+
+    .review-questions .options strong {
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+    }
 
     .correct::before {
 	
@@ -487,6 +530,71 @@
     .pdf-nav-btn:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: scale(1.05);
+    }
+
+    /* Review Questions Specific Styles */
+    .review-question {
+        position: relative;
+    }
+
+    .review-answer-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.7rem 1.5rem;
+        background: var(--button-primary-bg);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        gap: 8px;
+        margin: 1rem 0;
+        box-shadow: 0 3px 10px rgba(42, 103, 111, 0.2);
+    }
+
+    .review-answer-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 103, 111, 0.3);
+    }
+
+    .review-answer-box {
+        display: none;
+        background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(56, 178, 172, 0.1));
+        border: 2px solid var(--correct-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0 2rem 0;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .review-answer-box .correct-answer {
+        color: #43a047;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px dashed rgba(67, 160, 71, 0.3);
+    }
+
+    .review-answer-box .explanation {
+        color: var(--text-color);
+        line-height: 1.7;
+        padding-top: 0.8rem;
+    }
+
+    .review-answer-box.show {
+        display: block;
+    }
+
+    [data-theme="dark"] .review-answer-box {
+        background: linear-gradient(135deg, rgba(72, 187, 120, 0.15), rgba(56, 178, 172, 0.15));
+        border-color: #48bb78;
+    }
+
+    [data-theme="dark"] .review-answer-box .correct-answer {
+        color: #48bb78;
     }
 
     .pdf-frame-container {
@@ -824,6 +932,9 @@
             </button>
             <button class="btn btn-secondary" id="slidesToggle" onclick="toggleSlides()">
                 <span class="btn-icon">📚</span> سلايدات المادة
+            </button>
+	                <button class="btn btn-secondary" id="reviewToggle" onclick="toggleReview()">
+                <span class="btn-icon">📋</span> أسئلة مراجعة الدكتور
             </button>
         </div>
 
@@ -2022,6 +2133,184 @@ void core2() { shared.y = 20; }</pre>
             </div>
         </div>
 
+	                <!-- Review Questions Section -->
+        <div class="review-section hidden" id="review-section">
+            <div class="slides-header">
+                أسئلة مراجعة الدكتور - Doctor's Review Questions
+            </div>
+            
+            <div class="doctor-note">
+                <div class="doctor-note-title">Doctor's note:</div>
+                <div class="doctor-note-content">
+                                        <p><strong>These are ONLY sample exam questions to assist you evaluating yourself (the exam will be different questions)</strong></p>
+                </div>
+            </div>
+
+            <!-- Review Questions -->
+            <div class="review-questions">
+                <!-- Question 1 -->
+                <div class="question review-question">
+                    <h3>Question 1: In a directory-based cache coherence system, what is the role of the directory when a core requests exclusive access to a cache line?</h3>
+                    <div class="options">
+                        <p><strong>A)</strong> Grant exclusive access immediately without checking sharers</p>
+                        <p><strong>B)</strong> Determine which cores have shared copies and send invalidations</p>
+                        <p><strong>C)</strong> Update main memory first before allowing any core to write</p>
+                        <p><strong>D)</strong> Require a full-cache flush on all cores to maintain consistency</p>
+                    </div>
+                    <button class="review-answer-btn" onclick="toggleReviewAnswer(1)">
+                        <span class="btn-icon">👁️</span> عرض الإجابة
+                    </button>
+                    <div class="review-answer-box" id="review-answer-1">
+                        <div class="correct-answer">
+                            <strong>✅ Correct Answer:</strong> B) Determine which cores have shared copies and send invalidations
+                        </div>
+                        <div class="explanation">
+                            <strong>📝 Explanation:</strong> In a directory-based coherence protocol, the directory maintains information about which cores have copies of each cache line. When a core requests exclusive (write) access, the directory identifies all cores sharing that line and sends invalidation messages to them before granting exclusive access to the requesting core.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question review-question">
+                    <h3>Question 2: Which statement correctly describes the behavior of a serial program on a multicore processor?</h3>
+                    <div class="options">
+                        <p><strong>A)</strong> It automatically uses all cores and gains linear speedup</p>
+                        <p><strong>B)</strong> It may perform similarly to a single-core system</p>
+                        <p><strong>C)</strong> It requires unused cores to be disabled</p>
+                        <p><strong>D)</strong> It cannot run unless rewritten for threading</p>
+                    </div>
+                    <button class="review-answer-btn" onclick="toggleReviewAnswer(2)">
+                        <span class="btn-icon">👁️</span> عرض الإجابة
+                    </button>
+                    <div class="review-answer-box" id="review-answer-2">
+                        <div class="correct-answer">
+                            <strong>✅ Correct Answer:</strong> B) It may perform similarly to a single-core system
+                        </div>
+                        <div class="explanation">
+                            <strong>📝 Explanation:</strong> A serial program has only one thread of execution, so it cannot automatically take advantage of multiple cores. It typically runs on just one core while other cores remain idle or run other processes. Therefore, its performance on a multicore processor is similar to running on a single-core system, unless the OS schedules it across multiple cores (which is rare for single-threaded programs).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question review-question">
+                    <h3>Question 3: What is the purpose of a synchronization barrier?</h3>
+                    <div class="options">
+                        <p><strong>A)</strong> To force sequential execution</p>
+                        <p><strong>B)</strong> To let each core update shared variables independently</p>
+                        <p><strong>C)</strong> To ensure all cores complete the current phase before continuing</p>
+                        <p><strong>D)</strong> To reassign tasks dynamically to idle cores</p>
+                    </div>
+                    <button class="review-answer-btn" onclick="toggleReviewAnswer(3)">
+                        <span class="btn-icon">👁️</span> عرض الإجابة
+                    </button>
+                    <div class="review-answer-box" id="review-answer-3">
+                        <div class="correct-answer">
+                            <strong>✅ Correct Answer:</strong> C) To ensure all cores complete the current phase before continuing
+                        </div>
+                        <div class="explanation">
+                            <strong>📝 Explanation:</strong> A synchronization barrier is a point in parallel computation where all threads/processes must stop and wait until every one of them reaches that point. This ensures that all have completed the current phase of computation before any proceed to the next phase, preventing race conditions and ensuring data consistency in parallel algorithms.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="question review-question">
+                    <h3>Question 4: ILP improves performance by:</h3>
+                    <div class="options">
+                        <p><strong>A)</strong> Issuing and executing multiple independent instructions simultaneously</p>
+                        <p><strong>B)</strong> Reducing the need for registers</p>
+                        <p><strong>C)</strong> Eliminating virtual memory</p>
+                        <p><strong>D)</strong> Making each instruction finish in one cycle</p>
+                    </div>
+                    <button class="review-answer-btn" onclick="toggleReviewAnswer(4)">
+                        <span class="btn-icon">👁️</span> عرض الإجابة
+                    </button>
+                    <div class="review-answer-box" id="review-answer-4">
+                        <div class="correct-answer">
+                            <strong>✅ Correct Answer:</strong> A) Issuing and executing multiple independent instructions simultaneously
+                        </div>
+                        <div class="explanation">
+                            <strong>📝 Explanation:</strong> Instruction-Level Parallelism (ILP) is a technique where a processor can execute multiple instructions in the same clock cycle. This is achieved by identifying independent instructions that don't depend on each other's results. Common methods to exploit ILP include pipelining, superscalar execution, and out-of-order execution. ILP improves performance without requiring changes to the source code.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="question review-question">
+                    <h3>Question 5: In a multicore system using a write-invalidate snooping protocol, what must occur when Core 1 writes to a shared cache line that Core 0 also currently holds?</h3>
+                    <div class="options">
+                        <p><strong>A)</strong> Core 0 immediately updates its cached copy with the new value</p>
+                        <p><strong>B)</strong> Core 0 must invalidate its cached copy of the line when it observes the write on the bus</p>
+                        <p><strong>C)</strong> Both cores continue using their cached copies until the next synchronization point</p>
+                        <p><strong>D)</strong> The write is delayed until all cores acknowledge receiving the updated value</p>
+                    </div>
+                    <button class="review-answer-btn" onclick="toggleReviewAnswer(5)">
+                        <span class="btn-icon">👁️</span> عرض الإجابة
+                    </button>
+                    <div class="review-answer-box" id="review-answer-5">
+                        <div class="correct-answer">
+                            <strong>✅ Correct Answer:</strong> B) Core 0 must invalidate its cached copy of the line when it observes the write on the bus
+                        </div>
+                        <div class="explanation">
+                            <strong>📝 Explanation:</strong> In a write-invalidate snooping protocol, when one core writes to a shared cache line, it broadcasts an invalidation request on the shared bus. Other cores that have copies of that line "snoop" (monitor) the bus and, upon seeing the invalidation request, mark their cached copies as invalid. This ensures that only one core has a valid (writable) copy at a time, maintaining cache coherence.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="question review-question">
+                    <h3>Question 6: Consider the following code running on a shared-memory multicore system:</h3>
+                    <div class="code-example">
+                        <pre>// Shared global variables
+double x = 0.0;
+double y = 0.0;
+
+// Thread 0
+for (int i = 0; i < N; i++) {
+    x += 1.0;
+}
+
+// Thread 1
+for (int i = 0; i < N; i++) {
+    y += 1.0;
+}</pre>
+                    </div>
+                    <p>Assume that x and y are allocated in memory such that they reside in the same cache line, and the two threads run on different cores.</p>
+                    <p>What is the most likely performance effect of this situation?</p>
+                    <div class="options">
+                        <p><strong>A)</strong> No performance impact, because x and y are distinct variables</p>
+                        <p><strong>B)</strong> Better cache utilization, because both threads share the same cache line</p>
+                        <p><strong>C)</strong> Frequent cache line invalidations and reloads, causing performance degradation</p>
+                        <p><strong>D)</strong> Automatic hardware separation of x and y into different cache lines to avoid interference</p>
+                    </div>
+                    <button class="review-answer-btn" onclick="toggleReviewAnswer(6)">
+                        <span class="btn-icon">👁️</span> عرض الإجابة
+                    </button>
+                    <div class="review-answer-box" id="review-answer-6">
+                        <div class="correct-answer">
+                            <strong>✅ Correct Answer:</strong> C) Frequent cache line invalidations and reloads, causing performance degradation
+                        </div>
+                        <div class="explanation">
+                            <strong>📝 Explanation:</strong> This is a classic example of <strong>false sharing</strong>. Even though Thread 0 only accesses x and Thread 1 only accesses y, because they are in the same cache line, when one thread writes to its variable, it invalidates the entire cache line in the other core's cache. This causes frequent cache misses and reloads, significantly degrading performance. The solution is to ensure x and y are on different cache lines (e.g., using padding).
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="toggleReview()">
+                    <span class="btn-icon">←</span> العودة للأسئلة
+                </button>
+                <button class="btn btn-secondary" onclick="showAllReviewAnswers()">
+                    <span class="btn-icon">👁️</span> عرض جميع الإجابات
+                </button>
+                <button class="btn btn-secondary" onclick="hideAllReviewAnswers()">
+                    <span class="btn-icon">🙈</span> إخفاء جميع الإجابات
+                </button>
+            </div>
+        </div>
+
         <div class="footer-note">
             دعواتكم للمساعد الخفي والعاملين على الموقع بالتوفيق والسداد والزوجة الصالحة
         </div>
@@ -2304,6 +2593,79 @@ void core2() { shared.y = 20; }</pre>
             link.click();
             document.body.removeChild(link);
         }
+
+        // Review toggle
+        let reviewVisible = false;
+                function toggleReview() {
+            const reviewSection = document.getElementById('review-section');
+            const reviewToggle = document.getElementById('reviewToggle');
+            const questionsSection = document.getElementById('questions-section');
+            const slidesSection = document.getElementById('slides-section');
+            
+            if(!reviewVisible) {
+                reviewSection.classList.remove('hidden');
+                questionsSection.style.display = 'none';
+                slidesSection.classList.add('hidden');
+                reviewToggle.innerHTML = '<span class="btn-icon">📝</span> الأسئلة';
+                reviewVisible = true;
+                // Scroll to review section
+                reviewSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                reviewSection.classList.add('hidden');
+                questionsSection.style.display = 'block';
+                reviewToggle.innerHTML = '<span class="btn-icon">📋</span> أسئلة مراجعة الدكتور';
+                reviewVisible = false;
+                // Hide all answers when leaving
+                hideAllReviewAnswers();
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Update other toggle functions to hide review section
+        // Add to toggleSlides function (inside the if(!slidesVisible) block):
+        // Add this line: document.getElementById('review-section').classList.add('hidden');
+        // And set reviewVisible = false;
+        // Review answer toggle functions
+        function toggleReviewAnswer(questionNum) {
+            const answerBox = document.getElementById(`review-answer-${questionNum}`);
+            const button = event.target.closest('.review-answer-btn');
+            
+            if (answerBox.classList.contains('show')) {
+                answerBox.classList.remove('show');
+                button.innerHTML = '<span class="btn-icon">👁️</span> عرض الإجابة';
+            } else {
+                answerBox.classList.add('show');
+                button.innerHTML = '<span class="btn-icon">🙈</span> إخفاء الإجابة';
+            }
+        }
+
+        function showAllReviewAnswers() {
+            const answerBoxes = document.querySelectorAll('.review-answer-box');
+            const buttons = document.querySelectorAll('.review-answer-btn');
+            
+            answerBoxes.forEach(box => {
+                box.classList.add('show');
+            });
+            
+            buttons.forEach(button => {
+                button.innerHTML = '<span class="btn-icon">🙈</span> إخفاء الإجابة';
+            });
+        }
+
+        function hideAllReviewAnswers() {
+            const answerBoxes = document.querySelectorAll('.review-answer-box');
+            const buttons = document.querySelectorAll('.review-answer-btn');
+            
+            answerBoxes.forEach(box => {
+                box.classList.remove('show');
+            });
+            
+            buttons.forEach(button => {
+                button.innerHTML = '<span class="btn-icon">👁️</span> عرض الإجابة';
+            });
+        }
+
     </script>
 </body>
 </html>
